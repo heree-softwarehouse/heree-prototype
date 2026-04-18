@@ -226,6 +226,33 @@ body {
   color: var(--text); display: block;
   font-size: 12px;
 }
+.tweaks.hidden { display: none; }
+.tweaks .close {
+  position: absolute; top: 10px; right: 10px;
+  width: 24px; height: 24px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: none; color: var(--text-dim);
+  cursor: pointer; font-size: 16px; line-height: 1; padding: 0;
+  font-family: inherit;
+}
+.tweaks .close:hover { color: var(--text); background: rgba(200,210,230,0.08); }
+.tweaks-toggle {
+  position: fixed; right: 20px; bottom: 20px; z-index: 999;
+  display: none; align-items: center; justify-content: center; gap: 6px;
+  height: 40px; padding: 0 14px; border-radius: 100px;
+  background: rgba(15,17,24,0.88);
+  border: 0.5px solid var(--stroke-strong);
+  backdrop-filter: blur(30px) saturate(180%);
+  color: var(--text); cursor: pointer;
+  font-family: var(--font-mono); font-size: 10px;
+  text-transform: uppercase; letter-spacing: 0.18em; font-weight: 600;
+}
+.tweaks-toggle.visible { display: inline-flex; }
+.tweaks-toggle:hover { color: var(--text); background: rgba(25,28,38,0.92); }
+@media (max-width: 640px) {
+  .tweaks { right: 12px; left: 12px; bottom: 12px; width: auto; max-height: 70vh; overflow-y: auto; }
+  .tweaks-toggle { right: 12px; bottom: 12px; }
+}
 .tweaks h4 {
   margin: 0 0 12px; font-size: 10px; font-weight: 600;
   letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-dim);
@@ -259,7 +286,10 @@ body {
 <body>
 <div id="root"></div>
 
+<button class="tweaks-toggle" id="tweaks-toggle" type="button" aria-label="Pokaż panel tweaks">Tweaks</button>
+
 <div class="tweaks" id="tweaks-panel">
+  <button class="close" id="tweaks-close" type="button" aria-label="Ukryj panel">×</button>
   <h4>Tweaks</h4>
   <section>
     <div class="label">Paleta</div>
@@ -1137,10 +1167,20 @@ setTimeout(fitStage, 100); setTimeout(fitStage, 400); setTimeout(fitStage, 1200)
     window.parent.postMessage({type:'__edit_mode_set_keys', edits:{dashboardMode:p.dataset.m}}, '*');
   });
 
+  const toggleBtn = document.getElementById('tweaks-toggle');
+  const closeBtn = document.getElementById('tweaks-close');
+  const setPanelOpen = (open) => {
+    panel.classList.toggle('hidden', !open);
+    toggleBtn.classList.toggle('visible', !open);
+  };
+  closeBtn.addEventListener('click', () => setPanelOpen(false));
+  toggleBtn.addEventListener('click', () => setPanelOpen(true));
+  if (window.matchMedia('(max-width: 640px)').matches) setPanelOpen(false);
+
   window.addEventListener('message', (e) => {
     const d = e.data || {};
-    if (d.type === '__activate_edit_mode') panel.style.display = 'block';
-    if (d.type === '__deactivate_edit_mode') panel.style.display = 'none';
+    if (d.type === '__activate_edit_mode') setPanelOpen(true);
+    if (d.type === '__deactivate_edit_mode') { panel.classList.add('hidden'); toggleBtn.classList.remove('visible'); }
   });
   window.parent.postMessage({type:'__edit_mode_available'}, '*');
 })();

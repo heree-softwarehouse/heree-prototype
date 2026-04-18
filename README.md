@@ -1,17 +1,10 @@
 # Heree Design System
 
-## 🔗 [**Live Prototype → heree-softwarehouse.github.io/heree-prototype**](https://heree-softwarehouse.github.io/heree-prototype/)
+## 🔗 [**Live Prototype → heree-softwarehouse.github.io/heree-prototype/index.html**](https://heree-softwarehouse.github.io/heree-prototype/index.html)
 
 ---
 
-**Heree** (*heree.*) is a hyperlocal Polish neighborhood mobile app — "your street · your people" (*twoja ulica · twoi ludzie*). Users sign in with a phone number, see people and reports within ~500 m of their location on a map, and post short community reports (broken glass, bus detour, lost cat, local events). The core product is a **native-feeling iOS mobile app** with a distinctive editorial + warm-coral-on-navy visual language.
-
-## Product context
-
-- **One product:** Heree mobile app (iOS-native styling; 390×844 device frame used in source).
-- **Language:** All copy is in **Polish**.
-- **Flow in source:** Splash → Phone number → SMS OTP → Verification loader → Dashboard (map + bottom sheet feed). A "Tryb demo" (demo mode) lets users explore without an account.
-- **Backend:** Not attached to this design system. The `heree-softwarehouse/heree-app` GitHub repo was empty on `main`, so the canonical source here is the working HTML/JSX prototype below.
+**Heree** is a mobile app for networking and meeting people.
 
 ## Sources
 

@@ -1,0 +1,44 @@
+<!doctype html><html><head><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Instrument+Serif:ital,wght@0,400;1,400&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"><link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  html,body{margin:0;background:
+    radial-gradient(500px 340px at 20% -10%, rgba(28,39,64,0.55), transparent 55%),
+    radial-gradient(400px 300px at 110% 110%, rgba(255,122,69,0.10), transparent 55%),
+    #0B1220;
+    color:#F5F7FA;font-family:var(--font-sans);height:100%}
+  .wrap{padding:18px 22px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .sw{
+    border-radius:14px;height:96px;padding:11px 12px;
+    display:flex;flex-direction:column;justify-content:space-between;
+    background:rgba(184,194,208,0.06);
+    border:0.5px solid var(--stroke-strong);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);
+    position:relative;overflow:hidden;
+  }
+  .sw::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:3px;
+    background:var(--c);
+  }
+  .top{display:flex;align-items:center;gap:8px}
+  .chip{width:22px;height:22px;border-radius:8px;background:var(--c);box-shadow:0 0 14px color-mix(in oklab, var(--c) 40%, transparent)}
+  .nm{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.14em;font-size:9px;color:#B8C2D0}
+  .val{color:var(--c);font-family:var(--font-serif);font-style:italic;font-size:18px;line-height:1;letter-spacing:-0.01em}
+  .hex{font-family:var(--font-mono);font-size:9.5px;color:#7A8499;letter-spacing:0.04em}
+  .row{display:flex;justify-content:space-between;align-items:flex-end}
+</style></head><body><div class="wrap">
+  <div class="sw" style="--c:#7BC9A6">
+    <div class="top"><div class="chip"></div><div class="nm">success</div></div>
+    <div class="row"><div class="val">ok</div><div class="hex">#7BC9A6</div></div>
+  </div>
+  <div class="sw" style="--c:#E8B86B">
+    <div class="top"><div class="chip"></div><div class="nm">warning</div></div>
+    <div class="row"><div class="val">uwaga</div><div class="hex">#E8B86B</div></div>
+  </div>
+  <div class="sw" style="--c:#E8677A">
+    <div class="top"><div class="chip"></div><div class="nm">danger</div></div>
+    <div class="row"><div class="val">błąd</div><div class="hex">#E8677A</div></div>
+  </div>
+  <div class="sw" style="--c:#8FA8D9">
+    <div class="top"><div class="chip"></div><div class="nm">info</div></div>
+    <div class="row"><div class="val">info</div><div class="hex">#8FA8D9</div></div>
+  </div>
+</div></body></html>

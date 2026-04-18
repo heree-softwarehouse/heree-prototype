@@ -1,0 +1,186 @@
+/* Heree — Liquid Glass iOS */
+:root {
+  --accent: #FF5E3A;
+  --accent-light: #FF8A65;
+  --accent-deep: #E8441E;
+  --text: #1a1411;
+  --muted: #6b5e57;
+  --ink-05: rgba(26,20,17,0.05);
+  --ink-10: rgba(26,20,17,0.10);
+  --ink-20: rgba(26,20,17,0.20);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: #e8e4df;
+  min-height: 100vh;
+}
+
+body {
+  background:
+    radial-gradient(1200px 800px at 10% -10%, #f6e9d8 0%, transparent 60%),
+    radial-gradient(1000px 700px at 120% 100%, #f3d9c3 0%, transparent 55%),
+    #ece6df;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+}
+
+/* App ambient background (lives inside device) */
+.heree-ambient {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+.heree-ambient::before,
+.heree-ambient::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.85;
+}
+.heree-ambient::before {
+  width: 420px; height: 420px;
+  background: radial-gradient(circle, #FFB38A 0%, #FF7A45 55%, transparent 70%);
+  top: -120px; left: -80px;
+  animation: blobA 18s ease-in-out infinite;
+}
+.heree-ambient::after {
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, #FFD7A8 0%, #FF9466 60%, transparent 75%);
+  bottom: -140px; right: -100px;
+  animation: blobB 22s ease-in-out infinite;
+}
+@keyframes blobA {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, 60px) scale(1.1); }
+}
+@keyframes blobB {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-30px, -40px) scale(1.08); }
+}
+
+/* Liquid glass surface */
+.glass {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 0.5px solid rgba(255,255,255,0.6);
+  box-shadow:
+    inset 1.5px 1.5px 1px rgba(255,255,255,0.7),
+    inset -1px -1px 1px rgba(255,255,255,0.3),
+    0 6px 24px rgba(138, 67, 30, 0.08),
+    0 2px 6px rgba(138, 67, 30, 0.06);
+}
+.glass-dark {
+  background: rgba(26, 20, 17, 0.35);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 0.5px solid rgba(255,255,255,0.15);
+  box-shadow:
+    inset 1.5px 1.5px 1px rgba(255,255,255,0.15),
+    0 6px 24px rgba(0,0,0,0.2);
+}
+
+/* Shake animation for wrong OTP */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-8px); }
+  30% { transform: translateX(8px); }
+  45% { transform: translateX(-6px); }
+  60% { transform: translateX(6px); }
+  75% { transform: translateX(-3px); }
+  90% { transform: translateX(3px); }
+}
+.shake { animation: shake 0.5s ease-in-out; }
+
+/* Haptic ripple */
+@keyframes haptic {
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+.haptic-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid var(--accent);
+  pointer-events: none;
+  animation: haptic 0.4s ease-out forwards;
+}
+
+/* Splash pulse */
+@keyframes splashPulse {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+@keyframes splashRing {
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Rotating loader */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Scene transition */
+.scene-enter { animation: fadeIn 0.45s ease-out both; }
+
+/* Button press */
+.press:active { transform: scale(0.97); transition: transform 0.08s; }
+
+/* Text select off inside app */
+.app * { user-select: none; -webkit-user-select: none; }
+
+/* Map pin pulse */
+@keyframes pinPulse {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(3); opacity: 0; }
+}
+
+/* Dashboard shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* No scroll on device */
+.no-scroll { overflow: hidden !important; }
+
+/* SF Pro Rounded fallback for numbers */
+.num {
+  font-family: "SF Pro Rounded", -apple-system, system-ui;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "ss01";
+}
+
+/* Heree wordmark */
+.wordmark {
+  font-family: -apple-system, "SF Pro Display", system-ui;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}

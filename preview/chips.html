@@ -1,0 +1,69 @@
+<!doctype html><html><head><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Instrument+Serif:ital,wght@0,400;1,400&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"><link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  html,body{margin:0;background:
+    radial-gradient(500px 340px at 20% -10%, rgba(28,39,64,0.55), transparent 55%),
+    radial-gradient(400px 300px at 110% 110%, rgba(255,122,69,0.10), transparent 55%),
+    #0B1220;
+    color:#F5F7FA;font-family:var(--font-sans);height:100%;
+    display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:20px}
+  .chip{
+    display:inline-flex;align-items:center;gap:7px;
+    padding:7px 12px;border-radius:100px;
+    font-size:11.5px;letter-spacing:0.01em;font-weight:500;
+    line-height:1;white-space:nowrap;
+  }
+  .chip svg{display:block;flex-shrink:0}
+  .default{background:rgba(184,194,208,0.06);border:0.5px solid rgba(184,194,208,0.20);color:#B8C2D0}
+  .accent{background:rgba(255,122,69,0.14);color:#FFC368;border:0.5px solid rgba(255,122,69,0.28)}
+  .outline{background:transparent;border:0.5px solid rgba(184,194,208,0.28);color:#B8C2D0}
+  .num{font-variant-numeric:tabular-nums}
+  .dot{width:5px;height:5px;border-radius:50%;background:#FF7A45;display:inline-block;box-shadow:0 0 6px rgba(255,122,69,0.6)}
+</style></head><body>
+
+  <!-- Lock · szyfrowane -->
+  <span class="chip default">
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>
+    </svg>
+    szyfrowane
+  </span>
+
+  <!-- Pin · 500 m -->
+  <span class="chip accent">
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22s7-7.5 7-13a7 7 0 1 0-14 0c0 5.5 7 13 7 13z"/><circle cx="12" cy="9" r="2.5"/>
+    </svg>
+    <span class="num">500 m</span>
+  </span>
+
+  <!-- Sparkle · demo -->
+  <span class="chip outline">
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 3l1.6 5L19 10l-5.4 2L12 17l-1.6-5L5 10l5.4-2L12 3z"/>
+    </svg>
+    wypróbuj demo
+  </span>
+
+  <!-- Live dot · aktywnych -->
+  <span class="chip default">
+    <span class="dot"></span>
+    <span><span class="num">14</span> aktywnych</span>
+  </span>
+
+  <!-- Clock · 2 min -->
+  <span class="chip default">
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+    </svg>
+    <span class="num">2 min</span>
+  </span>
+
+  <!-- Check · zweryfikowany -->
+  <span class="chip default">
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 12l5 5L20 7"/>
+    </svg>
+    zweryfikowany
+  </span>
+
+</body></html>

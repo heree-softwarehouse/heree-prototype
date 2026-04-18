@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8"/>
+<title>Heree · Mobile UI Kit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="stylesheet" href="../../colors_and_type.css"/>
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;background:
+    radial-gradient(1000px 700px at 15% -10%, rgba(28,39,64,0.55), transparent 55%),
+    radial-gradient(800px 600px at 110% 110%, rgba(255,122,69,0.10), transparent 55%),
+    var(--bg-0);
+    color:var(--text);font-family:var(--font-sans);
+    display:flex;align-items:center;justify-content:center;padding:28px 20px;gap:42px;flex-wrap:wrap;overflow-x:hidden}
+
+  /* device stage */
+  .stage{display:flex;flex-direction:column;align-items:center;gap:18px}
+  .device{position:relative;width:390px;height:844px;background:var(--bg-1);
+    border-radius:56px;border:0.5px solid var(--stroke-strong);
+    box-shadow:var(--shadow-device);overflow:hidden}
+  .device::before{content:"";position:absolute;inset:0;border-radius:56px;padding:3px;
+    background:linear-gradient(180deg, rgba(184,194,208,0.16), rgba(184,194,208,0.02) 30%, rgba(0,0,0,0.4));
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;z-index:60}
+  .screen{position:absolute;inset:8px;border-radius:46px;overflow:hidden;background:
+    radial-gradient(600px 400px at 20% 10%, rgba(255,122,69,0.08), transparent 55%),
+    radial-gradient(500px 400px at 100% 100%, rgba(93,212,176,0.05), transparent 55%),
+    var(--bg-1)}
+  .scene{position:absolute;inset:0;display:flex;flex-direction:column;padding:54px 20px 28px}
+  .scene-enter{animation: sceneIn var(--dur-base) var(--ease-out) both}
+  @keyframes sceneIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @keyframes ping{0%{transform:scale(1);opacity:.8}100%{transform:scale(3);opacity:0}}
+  @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.04);opacity:.92}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes orbit{to{transform:rotate(360deg)}}
+  @keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(10px)}60%{transform:translateX(-7px)}80%{transform:translateX(3px)}}
+  .shake{animation:shake 500ms var(--ease-out) both}
+
+  button{font-family:var(--font-sans)}
+  button:active{transform:scale(0.98);transition:transform var(--dur-fast) var(--ease-out)}
+
+  /* progress rail */
+  .rail{display:flex;align-items:center;gap:10px;color:var(--text-faint)}
+  .rail .dots{display:flex;gap:5px}
+  .dot{width:5px;height:5px;border-radius:50%;background:rgba(184,194,208,0.14);transition:all var(--dur-base) var(--ease-out)}
+  .dot.done{background:rgba(255,122,69,0.55)}
+  .dot.active{background:var(--accent);width:18px;border-radius:100px;box-shadow:0 0 12px rgba(255,138,91,0.55)}
+  .rail .lbl{font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-faint)}
+
+  /* side rail (screen picker) */
+  .side{display:flex;flex-direction:column;gap:10px;width:220px}
+  .side h1{font-family:var(--font-serif);font-size:32px;letter-spacing:-0.02em;margin:0 0 4px;line-height:1;font-weight:400}
+  .side h1 em{font-style:italic;color:var(--accent)}
+  .side p{font-size:12px;color:var(--text-dim);margin:0 0 14px;line-height:1.5}
+  .side .pick{display:flex;flex-direction:column;gap:6px}
+  .side button{background:rgba(184,194,208,0.06);border:0.5px solid var(--stroke);color:var(--text-dim);
+    border-radius:12px;padding:10px 12px;text-align:left;cursor:pointer;font-size:12px;display:flex;justify-content:space-between;align-items:center}
+  .side button.on{background:rgba(255,122,69,0.14);border-color:transparent;color:var(--accent)}
+  .side button .k{font-family:var(--font-mono);font-size:10px;color:var(--text-faint);letter-spacing:0.14em}
+  .side button.on .k{color:var(--accent)}
+  .note{margin-top:18px;padding:12px;border-radius:12px;border:0.5px solid var(--stroke);background:rgba(184,194,208,0.04);font-size:11px;color:var(--text-faint);line-height:1.5}
+</style>
+</head>
+<body>
+
+<div class="side">
+  <h1>heree<span style="color:var(--accent)">.</span><br/><em>UI kit</em></h1>
+  <p>Interactive prototype of the Heree mobile flow. Tap through, or jump to any scene.</p>
+  <div class="pick" id="pick"></div>
+  <div class="note">Demo OTP: <span class="mono" style="color:var(--accent)">482157</span> (auto-filled on OTP screen).</div>
+</div>
+
+<div class="stage">
+  <div class="device">
+    <div id="status-mount"></div>
+    <div class="screen" id="screen"></div>
+    <div id="home-mount"></div>
+  </div>
+  <div class="rail">
+    <div class="dots" id="dots"></div>
+    <div class="lbl" id="stage-lbl">01 · Splash</div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="./components.jsx"></script>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+const SCENES = [
+  {id:'splash',label:'Splash'},
+  {id:'phone', label:'Numer'},
+  {id:'otp',   label:'Kod SMS'},
+  {id:'loading',label:'Weryfikacja'},
+  {id:'dashboard',label:'Dashboard'},
+];
+
+function App(){
+  const saved = (typeof localStorage!=='undefined' && localStorage.getItem('heree-scene')) || 'splash';
+  const [scene,setScene] = useState(saved);
+  const [phone,setPhone] = useState('501234567');
+  const [demo,setDemo] = useState(false);
+
+  useEffect(()=>{ try{localStorage.setItem('heree-scene',scene);}catch(e){} },[scene]);
+
+  const go = (id)=>setScene(id);
+  const idx = SCENES.findIndex(s=>s.id===scene);
+
+  // side rail
+  useEffect(()=>{
+    const el=document.getElementById('pick'); if(!el) return; el.innerHTML='';
+    SCENES.forEach((s,i)=>{
+      const b=document.createElement('button');
+      b.className = s.id===scene?'on':'';
+      b.innerHTML = `<span>${s.label}</span><span class="k">${String(i+1).padStart(2,'0')}</span>`;
+      b.onclick=()=>setScene(s.id);
+      el.appendChild(b);
+    });
+  },[scene]);
+  // stage dots
+  useEffect(()=>{
+    const d=document.getElementById('dots'); if(!d) return; d.innerHTML='';
+    SCENES.forEach((s,i)=>{
+      const n=document.createElement('div');
+      n.className='dot '+(i<idx?'done':i===idx?'active':'');
+      d.appendChild(n);
+    });
+    document.getElementById('stage-lbl').textContent = `${String(idx+1).padStart(2,'0')} · ${SCENES[idx].label}`;
+  },[scene]);
+
+  let content;
+  if(scene==='splash')  content = <Splash onDone={()=>go('phone')}/>;
+  else if(scene==='phone') content = <Phone onNext={(p)=>{setPhone(p);go('otp')}} onDemo={()=>{setDemo(true);go('dashboard')}}/>;
+  else if(scene==='otp')   content = <Otp phone={phone} onNext={()=>go('loading')} onBack={()=>go('phone')}/>;
+  else if(scene==='loading') content = <Loading onDone={()=>go('dashboard')}/>;
+  else content = <Dashboard demoMode={demo} onExitDemo={()=>{setDemo(false);go('phone')}}/>;
+
+  return (
+    <>
+      <StatusBar/>
+      {content}
+      <HomeIndicator/>
+    </>
+  );
+}
+
+// mount
+ReactDOM.createRoot(document.getElementById('screen')).render(<App/>);
+</script>
+</body>
+</html>

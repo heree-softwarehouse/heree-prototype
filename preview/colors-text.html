@@ -1,0 +1,65 @@
+<!doctype html><html><head><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Instrument+Serif:ital,wght@0,400;1,400&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"><link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  html,body{margin:0;background:
+    radial-gradient(500px 340px at 20% -10%, rgba(28,39,64,0.55), transparent 55%),
+    radial-gradient(400px 300px at 110% 110%, rgba(255,195,104,0.10), transparent 55%),
+    #0B1220;
+    color:#F5F7FA;font-family:var(--font-sans);height:100%}
+  .wrap{padding:18px 22px;display:flex;flex-direction:column;gap:2px}
+  .row{display:grid;grid-template-columns:180px 1fr auto auto;align-items:center;gap:14px;padding:10px 6px;border-bottom:0.5px solid rgba(184,194,208,0.14)}
+  .row:last-child{border:none}
+  .sample{font-size:18px;letter-spacing:-0.01em;font-weight:500}
+  .sample em{font-family:var(--font-serif);font-style:italic;font-weight:400;font-size:22px}
+  .meta{font-family:var(--font-mono);font-size:10px;color:#7A8499;letter-spacing:0.14em;text-transform:uppercase}
+  .tag{font-family:var(--font-mono);font-size:9px;padding:3px 8px;border-radius:100px;letter-spacing:0.08em}
+  .tag.aaa{background:rgba(123,201,166,0.14);color:#7BC9A6;border:0.5px solid rgba(123,201,166,0.3)}
+  .tag.aa{background:rgba(232,184,107,0.14);color:#E8B86B;border:0.5px solid rgba(232,184,107,0.3)}
+  .tag.fill{background:rgba(255,122,69,0.14);color:#FFB37A;border:0.5px solid rgba(255,122,69,0.3)}
+  .hex{font-family:var(--font-mono);font-size:10px;color:#B8C2D0}
+  .caption{font-family:var(--font-mono);font-size:9px;color:#7A8499;letter-spacing:0.14em;text-transform:uppercase;padding:14px 6px 4px}
+</style></head><body><div class="wrap">
+
+  <div class="caption">Neutral text · on navy bg-1</div>
+  <div class="row">
+    <div class="sample" style="color:#F5F7FA">Sąsiedzi</div>
+    <div class="meta">text / primary · 16.1:1</div>
+    <span class="tag aaa">AAA</span>
+    <span class="hex">#F5F7FA</span>
+  </div>
+  <div class="row">
+    <div class="sample" style="color:#B8C2D0">Sąsiedzi</div>
+    <div class="meta">text-dim / secondary · 8.5:1</div>
+    <span class="tag aaa">AAA</span>
+    <span class="hex">#B8C2D0</span>
+  </div>
+  <div class="row">
+    <div class="sample" style="color:#7A8499">Sąsiedzi</div>
+    <div class="meta">text-faint / tertiary · 4.7:1</div>
+    <span class="tag aa">AA</span>
+    <span class="hex">#7A8499</span>
+  </div>
+
+  <div class="caption">Warm accent text · shifted toward amber for readability</div>
+  <div class="row">
+    <div class="sample" style="color:#FFC368"><em>sąsiedzie</em></div>
+    <div class="meta">accent-text · body/italic · 10.8:1</div>
+    <span class="tag aaa">AAA</span>
+    <span class="hex">#FFC368</span>
+  </div>
+  <div class="row">
+    <div class="sample" style="color:#FFB37A"><em>sąsiedzie</em></div>
+    <div class="meta">accent-text-warm · alt body · 8.4:1</div>
+    <span class="tag aaa">AAA</span>
+    <span class="hex">#FFB37A</span>
+  </div>
+  <div class="row" title="Reserved for large display, solid fills, pins, chips">
+    <div class="sample" style="display:flex;align-items:center;gap:10px">
+      <span style="display:inline-block;width:28px;height:28px;border-radius:10px;background:#FF7A45;box-shadow:0 0 16px rgba(255,122,69,0.4)"></span>
+      <span style="font-family:var(--font-mono);font-size:11px;color:#B8C2D0;letter-spacing:0.04em">fill</span>
+    </div>
+    <div class="meta">accent · fills only / not text</div>
+    <span class="tag fill">FILL ONLY</span>
+    <span class="hex">#FF7A45</span>
+  </div>
+
+</div></body></html>

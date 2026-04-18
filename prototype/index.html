@@ -1,0 +1,1149 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Heree v2 — Prototyp</title>
+<style>
+/* Heree v2 — tokens (palette switched at runtime via data-palette on :root) */
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* Neutral surface scale — stays consistent across palettes */
+  --ink-0: #0A0B0F;
+  --ink-1: #111319;
+  --ink-2: #181B24;
+  --ink-3: #222634;
+  --ink-4: #2D3244;
+
+  --stroke:        rgba(200, 210, 230, 0.12);
+  --stroke-strong: rgba(200, 210, 230, 0.24);
+
+  --text:       #F2F4F8;
+  --text-dim:   #B5BCCB;
+  --text-faint: #7E8699;
+
+  --font-sans: 'Inter Tight', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', 'New York', Georgia, serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --r-pill: 100px;
+  --r-xl: 28px; --r-lg: 22px; --r-md: 18px; --r-sm: 16px; --r-xs: 14px;
+  --r-device: 46px;
+
+  --ease-out: cubic-bezier(.2,.7,.2,1);
+  --dur: 320ms;
+
+  /* Default accent (Sunset — overridden by data-palette) */
+  --accent:       #FF7A45;
+  --accent-soft:  #FFA478;
+  --accent-deep:  #E85F2C;
+  --accent-gloss: #FFC368;
+  --accent-2:     #FFC368;
+  --accent-3:     #5DD4B0;
+  --on-accent:    #1A0F0A;
+  --bg-tint-a:    rgba(255,122,69,0.14);
+  --bg-tint-b:    rgba(93,212,176,0.08);
+  --sheet-tint-a: #321A1F;
+  --sheet-tint-b: #1F1316;
+}
+
+:root[data-palette="sunset"] {
+  --accent: #FF7A45; --accent-soft: #FFA478; --accent-deep: #E85F2C; --accent-gloss: #FFC368;
+  --accent-2: #FFC368; --accent-3: #5DD4B0; --on-accent: #1A0F0A;
+  --bg-tint-a: rgba(255,122,69,0.14); --bg-tint-b: rgba(93,212,176,0.08);
+  --sheet-tint-a: #321A1F; --sheet-tint-b: #1F1316;
+}
+
+:root[data-palette="moss"] {
+  --accent: #7BD389; --accent-soft: #A4E1AC; --accent-deep: #56B166; --accent-gloss: #C8F0CC;
+  --accent-2: #E0C97A; --accent-3: #86C4E8; --on-accent: #0F1A12;
+  --bg-tint-a: rgba(123,211,137,0.14); --bg-tint-b: rgba(134,196,232,0.08);
+  --sheet-tint-a: #17261C; --sheet-tint-b: #111A14;
+}
+
+:root[data-palette="iris"] {
+  --accent: #A78BFA; --accent-soft: #C4B0FC; --accent-deep: #7C5DEE; --accent-gloss: #DDD0FF;
+  --accent-2: #F0A5C7; --accent-3: #78E1D0; --on-accent: #120B22;
+  --bg-tint-a: rgba(167,139,250,0.14); --bg-tint-b: rgba(120,225,208,0.08);
+  --sheet-tint-a: #1E1A30; --sheet-tint-b: #15121F;
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0; height: 100%;
+  background: var(--ink-0);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+body {
+  background:
+    radial-gradient(900px 700px at 12% -10%, var(--bg-tint-a), transparent 55%),
+    radial-gradient(800px 600px at 110% 110%, var(--bg-tint-b), transparent 55%),
+    var(--ink-0);
+}
+
+#root {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.num { font-variant-numeric: tabular-nums; }
+.mono { font-family: var(--font-mono); }
+
+/* Device chrome */
+.stage-wrap { transform-origin: center center; will-change: transform; }
+.stage { width: 100%; max-width: 460px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.stage-top {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 6px; color: var(--text-faint);
+}
+.stage-top .dots { display: flex; gap: 5px; align-items: center; }
+.dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(200,210,230,0.14); transition: all var(--dur) var(--ease-out); }
+.dot.done { background: color-mix(in oklch, var(--accent) 55%, transparent); }
+.dot.active { background: var(--accent); width: 18px; border-radius: 100px; box-shadow: 0 0 10px color-mix(in oklch, var(--accent) 60%, transparent); }
+.stage-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; }
+
+.device {
+  position: relative; width: 390px; height: 844px;
+  border-radius: 56px;
+  background: linear-gradient(145deg, #2A2E3C 0%, #0B0C10 100%);
+  padding: 10px;
+  box-shadow:
+    0 60px 120px -20px rgba(0,0,0,0.75),
+    0 30px 60px -10px rgba(20,24,40,0.4),
+    inset 0 1px 0 rgba(200,210,230,0.10),
+    inset 0 -1px 0 rgba(0,0,0,0.5);
+}
+.screen {
+  position: relative; width: 100%; height: 100%;
+  border-radius: 46px; overflow: hidden;
+  background: var(--ink-1);
+}
+.island {
+  position: absolute; top: 11px; left: 50%; transform: translateX(-50%);
+  width: 124px; height: 36px; background: #000; border-radius: 100px; z-index: 50;
+}
+.statusbar {
+  position: absolute; top: 0; left: 0; right: 0; height: 54px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 30px 0; font-size: 15px; font-weight: 600;
+  color: var(--text); z-index: 40; pointer-events: none;
+}
+.home-indicator {
+  position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+  width: 134px; height: 5px; border-radius: 100px;
+  background: rgba(242,244,248,0.45); z-index: 40;
+}
+.app {
+  position: absolute; inset: 0; border-radius: 46px; overflow: hidden;
+  background:
+    radial-gradient(400px 320px at 10% 4%, var(--bg-tint-a), transparent 55%),
+    radial-gradient(460px 380px at 95% 96%, var(--bg-tint-b), transparent 60%),
+    linear-gradient(180deg, var(--ink-1) 0%, var(--ink-0) 100%);
+}
+.scene {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  padding: 58px 24px 30px; z-index: 10; color: var(--text);
+}
+.scene-enter { animation: sceneIn var(--dur) var(--ease-out) both; }
+@keyframes sceneIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+@keyframes ping { 0% { transform: scale(1); opacity: 0.7; } 100% { transform: scale(3); opacity: 0; } }
+@keyframes pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.04); opacity: 0.9; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); } 40% { transform: translateX(10px); }
+  60% { transform: translateX(-7px); } 80% { transform: translateX(3px); }
+}
+.shake { animation: shake 500ms var(--ease-out) both; }
+
+.glass {
+  background: rgba(200,210,230,0.06);
+  border: 0.5px solid var(--stroke-strong);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 6px 24px rgba(0,0,0,0.35);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 10px; border-radius: 100px;
+  background: rgba(200,210,230,0.06);
+  border: 0.5px solid var(--stroke);
+  font-size: 11px; color: var(--text-dim);
+  letter-spacing: 0.02em;
+}
+.chip-accent {
+  background: var(--bg-tint-a);
+  color: var(--accent);
+  border-color: transparent;
+}
+
+.btn-primary {
+  width: 100%; height: 56px; border: none; border-radius: 28px;
+  font-family: inherit; font-size: 16px; font-weight: 600;
+  color: var(--on-accent); background: var(--accent);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 24px -6px color-mix(in oklch, var(--accent) 55%, transparent);
+  cursor: pointer; transition: transform 120ms ease;
+  letter-spacing: -0.01em;
+}
+.btn-primary:active { transform: scale(0.98); }
+.btn-primary[disabled] {
+  background: transparent; color: var(--text-faint);
+  border: 0.5px solid var(--stroke-strong); box-shadow: none;
+  cursor: not-allowed;
+}
+
+.stage-bottom {
+  display: flex; gap: 6px; align-items: center;
+  padding: 8px 10px; border-radius: 100px;
+  background: rgba(0,0,0,0.5);
+  border: 0.5px solid var(--stroke);
+  backdrop-filter: blur(20px);
+}
+.stage-bottom button {
+  font-family: inherit;
+  background: transparent; border: none; color: var(--text-dim);
+  font-size: 13px; font-weight: 500; padding: 6px 12px;
+  border-radius: 100px; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.stage-bottom button:hover { background: rgba(200,210,230,0.08); color: var(--text); }
+.stage-bottom button.primary { background: var(--bg-tint-a); color: var(--accent); }
+
+.tweaks {
+  position: fixed; right: 20px; bottom: 20px; z-index: 999;
+  width: 260px; padding: 16px;
+  background: rgba(15,17,24,0.88);
+  border: 0.5px solid var(--stroke-strong);
+  border-radius: 20px;
+  backdrop-filter: blur(30px) saturate(180%);
+  color: var(--text); display: none;
+  font-size: 12px;
+}
+.tweaks h4 {
+  margin: 0 0 12px; font-size: 10px; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-dim);
+  font-family: var(--font-mono);
+}
+.tweaks section { margin-bottom: 14px; }
+.tweaks section:last-child { margin-bottom: 0; }
+.tweaks .label { font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 6px; font-family: var(--font-mono); }
+.tweaks .row { display: flex; gap: 6px; }
+.tweaks .pill {
+  flex: 1; padding: 8px 10px; border-radius: 12px;
+  background: rgba(200,210,230,0.06); border: 0.5px solid var(--stroke);
+  color: var(--text-dim); cursor: pointer; font-family: inherit; font-size: 12px;
+  text-align: center;
+}
+.tweaks .pill.on { background: var(--accent); color: var(--on-accent); border-color: transparent; font-weight: 600; }
+.tweaks .sw-row { display: flex; gap: 6px; }
+.tweaks .sw {
+  flex: 1; aspect-ratio: 1 / 1; border-radius: 12px; cursor: pointer;
+  border: 2px solid transparent; position: relative;
+}
+.tweaks .sw.on { border-color: var(--text); }
+.tweaks .sw::after {
+  content: attr(data-name); position: absolute; bottom: 4px; left: 0; right: 0;
+  text-align: center; font-size: 9px; color: rgba(255,255,255,0.9);
+  text-transform: uppercase; letter-spacing: 0.12em; font-family: var(--font-mono);
+}
+
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<div class="tweaks" id="tweaks-panel">
+  <h4>Tweaks</h4>
+  <section>
+    <div class="label">Paleta</div>
+    <div class="sw-row" id="tw-palette">
+      <div class="sw on" data-p="sunset" data-name="sunset" style="background:linear-gradient(135deg,#FFC368,#FF7A45 55%,#E85F2C)"></div>
+      <div class="sw" data-p="moss" data-name="moss" style="background:linear-gradient(135deg,#C8F0CC,#7BD389 55%,#56B166)"></div>
+      <div class="sw" data-p="iris" data-name="iris" style="background:linear-gradient(135deg,#DDD0FF,#A78BFA 55%,#7C5DEE)"></div>
+    </div>
+  </section>
+  <section>
+    <div class="label">Dashboard mode</div>
+    <div class="row" id="tw-mode">
+      <div class="pill on" data-m="swiping">swiping</div>
+      <div class="pill" data-m="cruising">cruising</div>
+    </div>
+  </section>
+  <section>
+    <div class="label">Ekran</div>
+    <div class="row" id="tw-scene" style="flex-wrap:wrap"></div>
+  </section>
+</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script>
+/* Config applied before app mount — persisted via __edit_mode_set_keys */
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "palette": "iris",
+  "dashboardMode": "cruising"
+}/*EDITMODE-END*/;
+document.documentElement.setAttribute('data-palette', TWEAK_DEFAULTS.palette);
+window.__HEREE_TWEAKS = { ...TWEAK_DEFAULTS };
+</script>
+
+<script type="text/babel">
+/* Heree v2 — shared primitives: icons, status bar, buttons, keypad, logo */
+const { useState, useEffect, useMemo, useRef } = React;
+
+const Ic = {
+  Arrow:   ({s=18,c='currentColor'}) => (<svg width={s} height={s} viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>),
+  Check:   ({s=18,c='currentColor'}) => (<svg width={s} height={s} viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke={c} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>),
+  X:       ({s=14,c='currentColor'}) => (<svg width={s} height={s} viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M6 18L18 6" stroke={c} strokeWidth="2" strokeLinecap="round"/></svg>),
+  Back:    ({s=16,c='currentColor'}) => (<svg width={s} height={s} viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>),
+  Lock:    ({s=14,c='currentColor'}) => (<svg width={s} height={s} viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke={c} strokeWidth="1.6"/><path d="M8 11V8a4 4 0 118 0v3" stroke={c} strokeWidth="1.6"/></svg>),
+  Pin:     ({s=16,c='currentColor'}) => (<svg width={s} height={s} viewBox="0 0 24 24" fill="none"><path d="M12 22s7-7.5 7-13a7 7 0 10-14 0c0 5.5 7 13 7 13z" stroke={c} strokeWidth="1.6"/><circle cx="12" cy="9" r="2.5" stroke={c} strokeWidth="1.6"/></svg>),
+  Restart: ({s=14,c='currentColor'}) => (<svg width={s} height={s} viewBox="0 0 24 24" fill="none"><path d="M21 12a9 9 0 11-3-6.7L21 8M21 3v5h-5" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>),
+  Sparkle: ({s=14,c='currentColor'}) => (<svg width={s} height={s} viewBox="0 0 24 24" fill="none"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z" fill={c}/></svg>),
+  Bksp:    ({s=22,c='currentColor'}) => (<svg width={s} height={s} viewBox="0 0 24 24" fill="none"><path d="M20 5H9L3 12l6 7h11a1 1 0 001-1V6a1 1 0 00-1-1z" stroke={c} strokeWidth="1.6" strokeLinejoin="round"/><path d="M11 9l5 6m0-6l-5 6" stroke={c} strokeWidth="1.6" strokeLinecap="round"/></svg>),
+  Camera:  ({s=18,c='currentColor'}) => (<svg width={s} height={s} viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="14" rx="2.5" stroke={c} strokeWidth="1.6"/><circle cx="12" cy="13" r="4" stroke={c} strokeWidth="1.6"/><path d="M9 6l1.2-2h3.6L15 6" stroke={c} strokeWidth="1.6" strokeLinejoin="round"/></svg>),
+  Heart:   ({s=22,c='currentColor',fill='none'}) => (<svg width={s} height={s} viewBox="0 0 24 24" fill={fill}><path d="M12 21s-8-5-8-11.5A4.5 4.5 0 0112 5a4.5 4.5 0 018 4.5C20 16 12 21 12 21z" stroke={c} strokeWidth="1.8" strokeLinejoin="round"/></svg>),
+  Plus:    ({s=18,c='currentColor'}) => (<svg width={s} height={s} viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke={c} strokeWidth="2" strokeLinecap="round"/></svg>),
+  Compass: ({s=18,c='currentColor'}) => (<svg width={s} height={s} viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke={c} strokeWidth="1.6"/><path d="M15.5 8.5l-2 5-5 2 2-5 5-2z" stroke={c} strokeWidth="1.6" strokeLinejoin="round"/></svg>),
+  Layers:  ({s=18,c='currentColor'}) => (<svg width={s} height={s} viewBox="0 0 24 24" fill="none"><path d="M12 3l9 5-9 5-9-5 9-5z" stroke={c} strokeWidth="1.6" strokeLinejoin="round"/><path d="M3 13l9 5 9-5" stroke={c} strokeWidth="1.6" strokeLinejoin="round"/></svg>),
+  Message: ({s=18,c='currentColor'}) => (<svg width={s} height={s} viewBox="0 0 24 24" fill="none"><path d="M4 6a2 2 0 012-2h12a2 2 0 012 2v9a2 2 0 01-2 2H9l-4 4V6z" stroke={c} strokeWidth="1.6" strokeLinejoin="round"/></svg>),
+};
+
+function HereeWordmark({ size=44 }) {
+  return (
+    <div style={{fontFamily:'var(--font-sans)',fontSize:size,fontWeight:700,letterSpacing:'-0.04em',lineHeight:1,color:'var(--text)'}}>
+      heree<span style={{color:'var(--accent)'}}>.</span>
+    </div>
+  );
+}
+function HereePin({ size=108 }) {
+  return (
+    <div style={{
+      width:size, height:size, borderRadius:'50%',
+      background:'radial-gradient(circle at 30% 30%, var(--accent-gloss) 0%, var(--accent) 55%, var(--accent-deep) 100%)',
+      boxShadow:'0 0 60px color-mix(in oklch, var(--accent) 60%, transparent), inset 0 -14px 26px rgba(0,0,0,0.35), inset 0 8px 14px rgba(255,255,255,0.35)',
+      display:'flex',alignItems:'center',justifyContent:'center',
+      color:'var(--on-accent)',fontSize:size*0.46,fontWeight:800,letterSpacing:'-0.06em',
+      fontFamily:'var(--font-sans)'
+    }}>h</div>
+  );
+}
+
+function StatusBar({ dark=false }) {
+  const col = dark ? '#111319' : '#F2F4F8';
+  return (<>
+    <div className="island"/>
+    <div className="statusbar" style={{color:col}}>
+      <div className="num" style={{fontWeight:600}}>9:41</div>
+      <div style={{display:'flex',gap:6,alignItems:'center'}}>
+        <svg width="17" height="11" viewBox="0 0 17 11" fill="none"><rect x="0" y="8" width="3" height="3" rx="0.5" fill={col}/><rect x="4.5" y="6" width="3" height="5" rx="0.5" fill={col}/><rect x="9" y="3" width="3" height="8" rx="0.5" fill={col}/><rect x="13.5" y="0" width="3" height="11" rx="0.5" fill={col}/></svg>
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="none"><path d="M8 10.5a1 1 0 100-2 1 1 0 000 2zM4.5 6.5a5 5 0 017 0M1.5 3.5a9 9 0 0113 0" stroke={col} strokeWidth="1.5" strokeLinecap="round"/></svg>
+        <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke={col} strokeOpacity="0.5"/><rect x="2" y="2" width="19" height="8" rx="1.5" fill={col}/><path d="M24 4v4c.7-.3 1.2-1.2 1.2-2S24.7 4.3 24 4z" fill={col} fillOpacity="0.5"/></svg>
+      </div>
+    </div>
+  </>);
+}
+
+function Chip({ children, tone='default', style={} }) {
+  const cls = tone==='accent' ? 'chip chip-accent' : 'chip';
+  return <div className={cls} style={style}>{children}</div>;
+}
+
+function Keypad({ onPress, onBack, compact=false }) {
+  const keys = ['1','2','3','4','5','6','7','8','9','','0','<'];
+  const h = compact ? 46 : 52;
+  return (
+    <div style={{display:'grid',gridTemplateColumns:'repeat(3, 1fr)',gap:8}}>
+      {keys.map((k,i) => {
+        if (k==='') return <div key={i}/>;
+        if (k==='<') return (
+          <button key={i} onClick={onBack} style={{
+            height:h,border:'none',borderRadius:16,background:'transparent',
+            color:'var(--text-dim)',fontFamily:'inherit',cursor:'pointer',
+            display:'flex',alignItems:'center',justifyContent:'center'
+          }}><Ic.Bksp/></button>
+        );
+        return (
+          <button key={i} onClick={()=>onPress(k)} className="num" style={{
+            height:h,borderRadius:16,
+            background:'rgba(200,210,230,0.05)',
+            border:'0.5px solid var(--stroke)',
+            color:'var(--text)',fontSize:24,fontWeight:500,fontFamily:'inherit',cursor:'pointer',
+            transition:'all 120ms ease'
+          }}
+          onMouseDown={e=>e.currentTarget.style.background='var(--bg-tint-a)'}
+          onMouseUp={e=>e.currentTarget.style.background='rgba(200,210,230,0.05)'}
+          onMouseLeave={e=>e.currentTarget.style.background='rgba(200,210,230,0.05)'}
+          >{k}</button>
+        );
+      })}
+    </div>
+  );
+}
+
+Object.assign(window, { Ic, HereeWordmark, HereePin, StatusBar, Chip, Keypad });
+
+</script>
+<script type="text/babel">
+/* Heree v2 — scenes part A: Splash, Phone, Otp, Loading, Profile */
+
+function Splash({ onDone }) {
+  useEffect(()=>{ const t=setTimeout(onDone,1700); return()=>clearTimeout(t); },[]);
+  return (
+    <div className="scene scene-enter" style={{alignItems:'center',justifyContent:'center'}}>
+      <div style={{position:'relative',width:160,height:160,marginBottom:28}}>
+        <div style={{position:'absolute',inset:0,borderRadius:'50%',border:'1px solid color-mix(in oklch, var(--accent) 35%, transparent)',animation:'ping 1.6s ease-out infinite'}}/>
+        <div style={{position:'absolute',inset:20,borderRadius:'50%',border:'1px solid color-mix(in oklch, var(--accent) 45%, transparent)',animation:'ping 1.6s ease-out 0.4s infinite'}}/>
+        <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center',animation:'pulse 2s ease-in-out infinite'}}>
+          <HereePin size={108}/>
+        </div>
+      </div>
+      <HereeWordmark size={44}/>
+      <div style={{marginTop:14,fontSize:10.5,letterSpacing:'0.24em',textTransform:'uppercase',color:'var(--text-faint)',fontFamily:'var(--font-mono)'}}>
+        twoja okolica · twoi ludzie
+      </div>
+    </div>
+  );
+}
+
+function Phone({ onNext, onDemo }) {
+  const [digits,setDigits] = useState('');
+  const [consent,setConsent] = useState(false);
+  const formatted = useMemo(()=>{ const g=digits.match(/.{1,3}/g); return g?g.join(' '):''; },[digits]);
+  const press=(d)=>{ if(digits.length>=9) return; setDigits(digits+d); };
+  const back=()=>setDigits(digits.slice(0,-1));
+  const ok = digits.length===9 && consent;
+  return (
+    <div className="scene scene-enter" style={{padding:'70px 22px 28px'}}>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:26}}>
+        <Chip><Ic.Lock c="var(--text-dim)"/> szyfrowane</Chip>
+        <button onClick={onDemo} style={{background:'transparent',border:'0.5px solid var(--stroke-strong)',borderRadius:100,padding:'6px 12px',fontSize:11,color:'var(--text-dim)',fontFamily:'inherit',cursor:'pointer',display:'inline-flex',alignItems:'center',gap:6}}>
+          <Ic.Sparkle c="var(--accent-2)" s={11}/> rozejrzyj się
+        </button>
+      </div>
+      <div style={{fontSize:36,fontWeight:600,letterSpacing:'-0.03em',lineHeight:1.05,marginBottom:10}}>
+        No to <span style={{color:'var(--accent)'}}>cześć</span>
+      </div>
+      <div style={{fontSize:14,color:'var(--text-dim)',marginBottom:26,maxWidth:300,lineHeight:1.5}}>
+        Rzuć numer — strzelimy kodem. Żadnych maili, żadnych haseł.
+      </div>
+      <div className="glass" style={{display:'flex',alignItems:'center',gap:12,padding:'16px 18px',borderRadius:18,marginBottom:14}}>
+        <div style={{display:'flex',alignItems:'center',gap:6,paddingRight:12,borderRight:'0.5px solid var(--stroke)'}}>
+          <span style={{fontSize:16}}>🇵🇱</span>
+          <span className="num" style={{fontSize:16,fontWeight:500}}>+48</span>
+        </div>
+        <div className="num" style={{fontSize:22,fontWeight:500,letterSpacing:'0.04em',color:digits?'var(--text)':'var(--text-faint)',flex:1}}>
+          {formatted || '___ ___ ___'}
+        </div>
+      </div>
+      <label style={{display:'flex',alignItems:'flex-start',gap:10,padding:'8px 4px',cursor:'pointer',marginBottom:'auto'}}>
+        <div onClick={()=>setConsent(!consent)} style={{width:22,height:22,borderRadius:7,flexShrink:0,marginTop:1,background:consent?'var(--accent)':'rgba(200,210,230,0.06)',border:consent?'none':'0.5px solid var(--stroke-strong)',display:'flex',alignItems:'center',justifyContent:'center',transition:'all 180ms'}}>
+          {consent && <Ic.Check s={14} c="var(--on-accent)"/>}
+        </div>
+        <div style={{fontSize:12,lineHeight:1.5,color:'var(--text-dim)'}}>
+          Akceptuję <span style={{color:'var(--text)',textDecoration:'underline',textUnderlineOffset:3}}>regulamin</span> i <span style={{color:'var(--text)',textDecoration:'underline',textUnderlineOffset:3}}>politykę prywatności</span>.
+        </div>
+      </label>
+      <div style={{marginTop:16,marginBottom:14}}><Keypad onPress={press} onBack={back}/></div>
+      <button className="btn-primary" disabled={!ok} onClick={()=>onNext(digits)}>Wyślij kod</button>
+    </div>
+  );
+}
+
+function Otp({ phone, onNext, onBack }) {
+  const [code,setCode] = useState(['','','','','','']);
+  const [error,setError] = useState(false);
+  const [resendIn,setResendIn] = useState(38);
+  const [autoFillHint,setAutoFillHint] = useState(true);
+  const [shake,setShake] = useState(false);
+  useEffect(()=>{ if(resendIn<=0) return; const t=setTimeout(()=>setResendIn(resendIn-1),1000); return()=>clearTimeout(t); },[resendIn]);
+  useEffect(()=>{
+    const t=setTimeout(()=>{
+      setAutoFillHint(false);
+      const correct=['4','8','2','1','5','7']; let i=0;
+      const iv=setInterval(()=>{
+        setCode(c=>{const n=[...c]; n[i]=correct[i]; return n;});
+        i++; if(i===6){ clearInterval(iv); setTimeout(onNext,500); }
+      },110);
+    },1800);
+    return()=>clearTimeout(t);
+  },[]);
+  const press=(d)=>{
+    const i=code.findIndex(c=>c===''); if(i<0) return;
+    const next=[...code]; next[i]=d; setCode(next);
+    if(i===5){
+      const joined=next.join('');
+      if(joined!=='482157'){ setShake(true); setError(true); setTimeout(()=>{setShake(false);setCode(['','','','','','']);setError(false);},700); }
+      else setTimeout(onNext,400);
+    }
+  };
+  const back=()=>{
+    const i=code.findIndex(c=>c==='');
+    const idx=i<0?5:i-1; if(idx<0) return;
+    const next=[...code]; next[idx]=''; setCode(next);
+  };
+  const maskedPhone = phone ? '+48 '+phone.slice(0,3)+' ••• '+phone.slice(6) : '+48 ••• ••• •••';
+  return (
+    <div className="scene scene-enter" style={{padding:'70px 22px 28px'}}>
+      <button onClick={onBack} style={{alignSelf:'flex-start',cursor:'pointer',marginBottom:20,background:'rgba(200,210,230,0.06)',border:'0.5px solid var(--stroke-strong)',fontFamily:'inherit',color:'var(--text-dim)',borderRadius:100,padding:'6px 10px',display:'inline-flex',alignItems:'center',gap:6,fontSize:11}}>
+        <Ic.Back c="var(--text-dim)"/> coś nie tak z numerem?
+      </button>
+      <div style={{fontSize:36,fontWeight:600,letterSpacing:'-0.03em',lineHeight:1.05,marginBottom:8}}>
+        Sześć cyferek z <span style={{color:'var(--accent)'}}>SMS-a</span>
+      </div>
+      <div style={{fontSize:14,color:'var(--text-dim)',marginBottom:22}}>
+        Wysłano na <span className="num" style={{color:'var(--text)'}}>{maskedPhone}</span>
+      </div>
+      {autoFillHint && (
+        <div className="glass" style={{display:'flex',alignItems:'center',gap:10,padding:'10px 14px',borderRadius:14,marginBottom:16,animation:'slideDown 0.5s ease-out both'}}>
+          <div style={{width:24,height:24,borderRadius:8,background:'var(--bg-tint-a)',display:'flex',alignItems:'center',justifyContent:'center'}}><Ic.Sparkle s={12} c="var(--accent)"/></div>
+          <div style={{flex:1,fontSize:12.5,color:'var(--text-dim)'}}>Z iPhone'a · wklejamy automatycznie</div>
+          <div style={{width:14,height:14,borderRadius:'50%',border:'1.5px solid var(--accent)',borderTopColor:'transparent',animation:'spin 0.7s linear infinite'}}/>
+        </div>
+      )}
+      <div className={shake?'shake':''} style={{display:'grid',gridTemplateColumns:'repeat(6, 1fr)',gap:8,marginBottom:14}}>
+        {code.map((c,i)=>{
+          const active = c==='' && i===code.findIndex(x=>x==='');
+          return (
+            <div key={i} className="num" style={{
+              aspectRatio:'1/1.1',borderRadius:14,
+              background:error?'rgba(255,107,122,0.14)':'rgba(200,210,230,0.05)',
+              border:error?'1px solid #FF6B7A':(active?'1px solid var(--accent)':'0.5px solid var(--stroke-strong)'),
+              display:'flex',alignItems:'center',justifyContent:'center',
+              fontSize:28,fontWeight:500,color:error?'#FF6B7A':'var(--text)',
+              boxShadow:active?'0 0 0 4px color-mix(in oklch, var(--accent) 14%, transparent)':'none',transition:'all 150ms'
+            }}>
+              {c || (active?<span style={{width:2,height:24,background:'var(--accent)',animation:'pulse 1s ease-in-out infinite'}}/>:'')}
+            </div>
+          );
+        })}
+      </div>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'auto',fontSize:12}}>
+        <span style={{color:error?'#FF6B7A':'var(--text-faint)'}}>{error?'Coś nie gra, spróbuj jeszcze raz':'Kod ważny 10 min'}</span>
+        {resendIn>0 ? (
+          <span style={{color:'var(--text-faint)'}} className="num">wyślij jeszcze raz · 0:{String(resendIn).padStart(2,'0')}</span>
+        ) : (
+          <span style={{color:'var(--accent)',cursor:'pointer'}}>wyślij jeszcze raz</span>
+        )}
+      </div>
+      <div style={{marginTop:16}}><Keypad onPress={press} onBack={back}/></div>
+    </div>
+  );
+}
+
+function Loading({ onDone }) {
+  const [step,setStep] = useState(0);
+  const steps = ['Sprawdzamy numer','Szukamy twojej okolicy','Podciągamy to, co się dzieje'];
+  useEffect(()=>{
+    if(step<steps.length){ const t=setTimeout(()=>setStep(step+1),700); return()=>clearTimeout(t); }
+    const t=setTimeout(onDone,400); return()=>clearTimeout(t);
+  },[step]);
+  return (
+    <div className="scene scene-enter" style={{alignItems:'center',justifyContent:'center',padding:'54px 24px 30px'}}>
+      <div style={{position:'relative',width:140,height:140,marginBottom:28}}>
+        <div style={{position:'absolute',inset:0,borderRadius:'50%',background:'conic-gradient(from 0deg, transparent, var(--accent))',animation:'spin 1.2s linear infinite'}}/>
+        <div style={{position:'absolute',inset:6,borderRadius:'50%',background:'var(--ink-0)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+          <Ic.Check s={36} c="var(--accent)"/>
+        </div>
+      </div>
+      <div style={{fontSize:30,fontWeight:600,letterSpacing:'-0.03em',marginBottom:4}}>Jesteś w środku</div>
+      <div style={{fontSize:13,color:'var(--text-dim)',marginBottom:26}}>Witaj w heree.</div>
+      <div style={{width:'100%',maxWidth:280,display:'flex',flexDirection:'column',gap:10}}>
+        {steps.map((s,i)=>(
+          <div key={i} className="glass" style={{display:'flex',alignItems:'center',gap:12,padding:'11px 14px',borderRadius:14,opacity:i<=step?1:0.35,transition:'opacity 0.3s'}}>
+            <div style={{width:20,height:20,borderRadius:'50%',background:i<step?'var(--accent)':'rgba(200,210,230,0.06)',border:i<step?'none':'1px solid var(--stroke-strong)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+              {i<step && <Ic.Check s={12} c="var(--on-accent)"/>}
+              {i===step && <div style={{width:10,height:10,borderRadius:'50%',border:'1.5px solid var(--accent)',borderTopColor:'transparent',animation:'spin 0.7s linear infinite'}}/>}
+            </div>
+            <div style={{fontSize:13,color:'var(--text)'}}>{s}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function Profile({ onDone }) {
+  const [name,setName] = useState('');
+  const [age,setAge] = useState('28');
+  const [bio,setBio] = useState('');
+  const [hood,setHood] = useState('Mokotów');
+  const [vibes,setVibes] = useState(['kawa','spacer']);
+  const allVibes = ['kawa','spacer','rower','kino','jam','bieganie','książki','gra planszowa','pies','ogród','koncerty','siłownia'];
+  const toggleVibe = (v) => setVibes(vibes.includes(v) ? vibes.filter(x=>x!==v) : (vibes.length>=5 ? vibes : [...vibes, v]));
+  const ok = name.trim().length>=2 && vibes.length>=2;
+
+  return (
+    <div className="scene scene-enter" style={{padding:'70px 22px 24px', overflowY:'auto'}}>
+      <div style={{fontFamily:'var(--font-mono)',fontSize:10,letterSpacing:'0.18em',textTransform:'uppercase',color:'var(--text-faint)',marginBottom:12}}>prawie w środku · krótki profil</div>
+      <div style={{fontSize:32,fontWeight:600,letterSpacing:'-0.03em',lineHeight:1.05,marginBottom:8}}>
+        Jak się <span style={{color:'var(--accent)'}}>przedstawisz</span>?
+      </div>
+      <div style={{fontSize:13,color:'var(--text-dim)',marginBottom:22,lineHeight:1.5}}>
+        Tyle, żeby ktoś obok wiedział, że to ty.
+      </div>
+
+      {/* Avatar + name */}
+      <div style={{display:'flex',gap:14,alignItems:'center',marginBottom:16}}>
+        <div style={{
+          width:72,height:72,borderRadius:24,position:'relative',
+          background:'linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%)',
+          display:'flex',alignItems:'center',justifyContent:'center',
+          boxShadow:'0 8px 20px -4px color-mix(in oklch, var(--accent) 40%, transparent)',
+          color:'var(--on-accent)',fontSize:28,fontWeight:700,letterSpacing:'-0.02em',flexShrink:0
+        }}>
+          {name ? name[0].toUpperCase() : '?'}
+          <div style={{
+            position:'absolute',bottom:-4,right:-4,width:28,height:28,borderRadius:'50%',
+            background:'var(--ink-2)',border:'2px solid var(--ink-1)',
+            display:'flex',alignItems:'center',justifyContent:'center',color:'var(--text)'
+          }}><Ic.Camera s={13}/></div>
+        </div>
+        <div style={{flex:1}}>
+          <div style={{fontFamily:'var(--font-mono)',fontSize:9,letterSpacing:'0.18em',textTransform:'uppercase',color:'var(--text-faint)',marginBottom:4}}>Jak ci mówić</div>
+          <input value={name} onChange={e=>setName(e.target.value)} placeholder="Kasia" style={{
+            width:'100%',background:'rgba(200,210,230,0.05)',border:'0.5px solid var(--stroke-strong)',
+            borderRadius:12,padding:'10px 12px',fontSize:15,fontFamily:'inherit',color:'var(--text)',outline:'none'
+          }}/>
+        </div>
+      </div>
+
+      {/* Age + hood row */}
+      <div style={{display:'grid',gridTemplateColumns:'90px 1fr',gap:10,marginBottom:16}}>
+        <div>
+          <div style={{fontFamily:'var(--font-mono)',fontSize:9,letterSpacing:'0.18em',textTransform:'uppercase',color:'var(--text-faint)',marginBottom:4}}>Wiek</div>
+          <input value={age} onChange={e=>setAge(e.target.value.replace(/\D/g,'').slice(0,2))} className="num" style={{
+            width:'100%',background:'rgba(200,210,230,0.05)',border:'0.5px solid var(--stroke-strong)',
+            borderRadius:12,padding:'10px 12px',fontSize:15,fontFamily:'inherit',color:'var(--text)',outline:'none',textAlign:'center'
+          }}/>
+        </div>
+        <div>
+          <div style={{fontFamily:'var(--font-mono)',fontSize:9,letterSpacing:'0.18em',textTransform:'uppercase',color:'var(--text-faint)',marginBottom:4}}>Dzielnica</div>
+          <div style={{display:'flex',alignItems:'center',gap:8,background:'rgba(200,210,230,0.05)',border:'0.5px solid var(--stroke-strong)',borderRadius:12,padding:'10px 12px'}}>
+            <Ic.Pin s={14} c="var(--accent)"/>
+            <span style={{fontSize:14,color:'var(--text)',flex:1}}>{hood} · Pole Mokotowskie</span>
+            <span className="chip chip-accent" style={{padding:'2px 8px',fontSize:10}}>GPS</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Bio */}
+      <div style={{marginBottom:16}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-end',marginBottom:4}}>
+          <div style={{fontFamily:'var(--font-mono)',fontSize:9,letterSpacing:'0.18em',textTransform:'uppercase',color:'var(--text-faint)'}}>O tobie w skrócie</div>
+          <div className="num" style={{fontSize:10,color:'var(--text-faint)'}}>{bio.length}/80</div>
+        </div>
+        <textarea value={bio} onChange={e=>setBio(e.target.value.slice(0,80))} placeholder="Biegam rano, piekę wieczorami, szukam kompana do szachów." rows={2} style={{
+          width:'100%',background:'rgba(200,210,230,0.05)',border:'0.5px solid var(--stroke-strong)',
+          borderRadius:12,padding:'10px 12px',fontSize:14,fontFamily:'inherit',color:'var(--text)',outline:'none',resize:'none',lineHeight:1.4
+        }}/>
+      </div>
+
+      {/* Vibes */}
+      <div style={{marginBottom:22}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:8}}>
+          <div style={{fontFamily:'var(--font-mono)',fontSize:9,letterSpacing:'0.18em',textTransform:'uppercase',color:'var(--text-faint)'}}>Co lubisz · wybierz 2–5</div>
+          <div className="num" style={{fontSize:10,color:'var(--accent)'}}>{vibes.length}/5</div>
+        </div>
+        <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
+          {allVibes.map(v=>{
+            const on = vibes.includes(v);
+            return (
+              <button key={v} onClick={()=>toggleVibe(v)} style={{
+                padding:'7px 12px',borderRadius:100,fontSize:12,fontFamily:'inherit',cursor:'pointer',
+                background: on ? 'var(--accent)' : 'rgba(200,210,230,0.05)',
+                color: on ? 'var(--on-accent)' : 'var(--text-dim)',
+                border: on ? 'none' : '0.5px solid var(--stroke)',
+                fontWeight: on ? 600 : 500, transition:'all 150ms'
+              }}>{v}</button>
+            );
+          })}
+        </div>
+      </div>
+
+      <button className="btn-primary" disabled={!ok} onClick={onDone} style={{marginTop:'auto'}}>
+        Chodź, zobaczymy kto jest obok
+      </button>
+    </div>
+  );
+}
+
+Object.assign(window, { Splash, Phone, Otp, Loading, Profile });
+
+</script>
+<script type="text/babel">
+/* Heree v2 — Dashboard with Swiping and Cruising modes */
+
+const PEOPLE = [
+  { id:1, name:'Kasia', age:29, dist:'140 m', hood:'Wierzbowa', bio:'Biegam rano po Polu Mokotowskim, 6:30. Szukam towarzystwa.', vibes:['bieganie','kawa','książki'], hue:12 },
+  { id:2, name:'Tomasz', age:34, dist:'220 m', hood:'Puławska', bio:'Jam w czwartki, gram na basie. Szukam kogoś do składu.', vibes:['jam','koncerty','rower'], hue:200 },
+  { id:3, name:'Magda', age:31, dist:'80 m', hood:'Grójecka', bio:'Borys się znalazł — dzięki wszystkim! Stawiam kawę komu pomógł.', vibes:['pies','kawa','ogród'], hue:330 },
+  { id:4, name:'Adam', age:27, dist:'310 m', hood:'Batorego', bio:'Szachy w parku w sobotę? Mam komplet, szukam przeciwnika.', vibes:['gra planszowa','książki','spacer'], hue:140 },
+  { id:5, name:'Ola', age:26, dist:'60 m', hood:'Madalińskiego', bio:'Piekarnia za rogiem wyrzuca żytni o 9:30. Kto leci po bochen?', vibes:['kawa','spacer','kino'], hue:45 },
+];
+
+function ModeToggle({ mode, setMode }) {
+  return (
+    <div className="glass" style={{
+      display:'inline-flex',padding:3,borderRadius:100,gap:2,
+      background:'rgba(0,0,0,0.3)',border:'0.5px solid var(--stroke-strong)'
+    }}>
+      {[
+        {id:'swiping', label:'swiping', ic:<Ic.Heart s={12}/>},
+        {id:'cruising', label:'cruising', ic:<Ic.Compass s={12}/>}
+      ].map(m=>(
+        <button key={m.id} onClick={()=>setMode(m.id)} style={{
+          border:'none',padding:'7px 14px',borderRadius:100,fontFamily:'inherit',fontSize:12,cursor:'pointer',
+          background: mode===m.id ? 'var(--accent)' : 'transparent',
+          color: mode===m.id ? 'var(--on-accent)' : 'var(--text-dim)',
+          fontWeight: mode===m.id ? 600 : 500,
+          display:'inline-flex',alignItems:'center',gap:6,
+          transition:'all 180ms'
+        }}>{m.ic}{m.label}</button>
+      ))}
+    </div>
+  );
+}
+
+function DashboardHeader({ mode, setMode }) {
+  return (
+    <div style={{position:'absolute',top:58,left:0,right:0,zIndex:20,padding:'0 18px',display:'flex',alignItems:'center',justifyContent:'space-between',gap:10}}>
+      <div className="glass" style={{display:'flex',alignItems:'center',gap:8,padding:'8px 12px',borderRadius:100}}>
+        <Ic.Pin s={13} c="var(--accent)"/>
+        <div>
+          <div style={{fontFamily:'var(--font-mono)',fontSize:8.5,color:'var(--text-faint)',textTransform:'uppercase',letterSpacing:'0.16em',lineHeight:1}}>jesteś w</div>
+          <div style={{fontSize:12,fontWeight:500,lineHeight:1.2,marginTop:2}}>Mokotów</div>
+        </div>
+        <span className="chip chip-accent" style={{padding:'3px 8px',fontSize:10}}>500 m</span>
+      </div>
+      <ModeToggle mode={mode} setMode={setMode}/>
+    </div>
+  );
+}
+
+/* ---------- SWIPING MODE ---------- */
+
+function SwipeCard({ person, onSwipe, z, offset=0, active }) {
+  const [drag, setDrag] = useState(0);
+  const [dragY, setDragY] = useState(0);
+  const [leaving, setLeaving] = useState(null);
+  const startRef = useRef(null);
+
+  const onPointerDown = (e) => {
+    if(!active) return;
+    startRef.current = { x: e.clientX, y: e.clientY };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+  const onPointerMove = (e) => {
+    if(!startRef.current) return;
+    setDrag(e.clientX - startRef.current.x);
+    setDragY(e.clientY - startRef.current.y);
+  };
+  const onPointerUp = () => {
+    if(!startRef.current) return;
+    startRef.current = null;
+    if(Math.abs(drag) > 80) {
+      const dir = drag > 0 ? 'right' : 'left';
+      setLeaving(dir);
+      setTimeout(()=>{ onSwipe(dir); setLeaving(null); setDrag(0); setDragY(0); }, 280);
+    } else {
+      setDrag(0); setDragY(0);
+    }
+  };
+
+  const rotation = drag / 20;
+  const leavingX = leaving === 'right' ? 500 : leaving === 'left' ? -500 : 0;
+  const tx = leaving ? leavingX : drag;
+  const ty = leaving ? dragY : dragY * 0.3;
+  const likeOpacity = Math.max(0, Math.min(1, drag / 100));
+  const nopeOpacity = Math.max(0, Math.min(1, -drag / 100));
+
+  return (
+    <div
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
+      style={{
+        position:'absolute', top:0, left:0, right:0, bottom:0,
+        borderRadius:24, overflow:'hidden',
+        zIndex: z,
+        transform: `translate(${tx}px, ${ty}px) rotate(${rotation}deg) scale(${active ? 1 : 1 - offset*0.04}) translateY(${active ? 0 : offset*10}px)`,
+        transition: startRef.current ? 'none' : leaving ? 'transform 280ms cubic-bezier(.4,0,.6,1), opacity 280ms' : 'transform 260ms var(--ease-out)',
+        opacity: leaving ? 0 : 1,
+        cursor: active ? 'grab' : 'default',
+        touchAction:'none',
+        background: `linear-gradient(160deg, hsl(${person.hue} 45% 28%) 0%, hsl(${person.hue + 20} 40% 14%) 100%)`,
+        boxShadow: '0 20px 40px -10px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08)',
+        border:'0.5px solid var(--stroke-strong)',
+        userSelect:'none'
+      }}
+    >
+      {/* Photo placeholder with gradient */}
+      <div style={{
+        position:'absolute',inset:0,
+        background: `
+          radial-gradient(circle at 30% 30%, hsla(${person.hue}, 70%, 60%, 0.4) 0%, transparent 60%),
+          radial-gradient(circle at 70% 80%, hsla(${person.hue + 40}, 60%, 50%, 0.3) 0%, transparent 55%)
+        `,
+      }}/>
+      {/* Initial */}
+      <div style={{
+        position:'absolute',top:'30%',left:'50%',transform:'translate(-50%,-50%)',
+        fontSize:140,fontWeight:700,color:'rgba(255,255,255,0.12)',letterSpacing:'-0.06em',
+        lineHeight:1,fontFamily:'var(--font-sans)'
+      }}>{person.name[0]}</div>
+
+      {/* Like/Nope badges */}
+      {active && (
+        <>
+          <div style={{
+            position:'absolute',top:28,left:20,padding:'8px 16px',
+            border:'3px solid #5DD4B0',color:'#5DD4B0',borderRadius:12,
+            fontWeight:800,fontSize:22,letterSpacing:'0.08em',
+            transform:'rotate(-14deg)',opacity:likeOpacity
+          }}>SIEMA</div>
+          <div style={{
+            position:'absolute',top:28,right:20,padding:'8px 16px',
+            border:'3px solid #FF6B7A',color:'#FF6B7A',borderRadius:12,
+            fontWeight:800,fontSize:22,letterSpacing:'0.08em',
+            transform:'rotate(14deg)',opacity:nopeOpacity
+          }}>NASTĘPNY</div>
+        </>
+      )}
+
+      {/* Bottom content */}
+      <div style={{
+        position:'absolute',left:0,right:0,bottom:0,padding:'40px 20px 20px',
+        background:'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.75) 60%, rgba(0,0,0,0.92) 100%)',
+        color:'#fff'
+      }}>
+        <div style={{display:'flex',alignItems:'baseline',gap:8,marginBottom:4}}>
+          <span style={{fontSize:24,fontWeight:700,letterSpacing:'-0.02em'}}>{person.name}</span>
+          <span className="num" style={{fontSize:22,fontWeight:400,opacity:0.85}}>{person.age}</span>
+        </div>
+        <div style={{display:'flex',alignItems:'center',gap:6,fontSize:11,opacity:0.75,marginBottom:8,fontFamily:'var(--font-mono)',textTransform:'uppercase',letterSpacing:'0.1em'}}>
+          <Ic.Pin s={10}/> {person.dist} · {person.hood}
+        </div>
+        <div style={{fontSize:13,lineHeight:1.4,opacity:0.92,marginBottom:10}}>{person.bio}</div>
+        <div style={{display:'flex',flexWrap:'wrap',gap:5}}>
+          {person.vibes.map(v=>(
+            <span key={v} style={{padding:'3px 9px',borderRadius:100,fontSize:10.5,background:'rgba(255,255,255,0.16)',color:'#fff',border:'0.5px solid rgba(255,255,255,0.2)'}}>{v}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SwipingMode() {
+  const [stack, setStack] = useState(PEOPLE);
+  const onSwipe = (dir) => {
+    setStack(s => s.slice(1).concat(s[0]));
+  };
+  const top = stack[0];
+
+  return (
+    <div style={{position:'absolute',inset:0,paddingTop:118,paddingBottom:100}}>
+      <div style={{position:'relative',margin:'0 20px',height:'calc(100% - 20px)'}}>
+        {stack.slice(0,3).reverse().map((p,i,arr)=>{
+          const offset = arr.length - 1 - i;
+          return <SwipeCard key={p.id} person={p} z={10+i} offset={offset} active={offset===0} onSwipe={onSwipe}/>
+        })}
+      </div>
+      {/* Swipe action buttons */}
+      <div style={{position:'absolute',bottom:16,left:0,right:0,display:'flex',justifyContent:'center',gap:18,alignItems:'center'}}>
+        <button onClick={()=>onSwipe('left')} style={{
+          width:56,height:56,borderRadius:'50%',border:'0.5px solid var(--stroke-strong)',
+          background:'rgba(15,17,24,0.9)',backdropFilter:'blur(20px)',cursor:'pointer',
+          display:'flex',alignItems:'center',justifyContent:'center',color:'#FF6B7A',
+          boxShadow:'0 8px 20px rgba(0,0,0,0.4)'
+        }}><Ic.X s={20}/></button>
+        <button onClick={()=>onSwipe('right')} style={{
+          width:72,height:72,borderRadius:'50%',border:'none',
+          background:'var(--accent)',cursor:'pointer',
+          display:'flex',alignItems:'center',justifyContent:'center',color:'var(--on-accent)',
+          boxShadow:'0 10px 28px -4px color-mix(in oklch, var(--accent) 50%, transparent), inset 0 1px 0 rgba(255,255,255,0.25)'
+        }}><Ic.Heart s={28} fill="var(--on-accent)" c="var(--on-accent)"/></button>
+        <button style={{
+          width:56,height:56,borderRadius:'50%',border:'0.5px solid var(--stroke-strong)',
+          background:'rgba(15,17,24,0.9)',backdropFilter:'blur(20px)',cursor:'pointer',
+          display:'flex',alignItems:'center',justifyContent:'center',color:'var(--accent-2)',
+          boxShadow:'0 8px 20px rgba(0,0,0,0.4)'
+        }}><Ic.Sparkle s={20} c="var(--accent-2)"/></button>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- CRUISING MODE ---------- */
+
+function CruisingMode() {
+  const [selected, setSelected] = useState(PEOPLE[0]);
+
+  const pins = [
+    { id:1, x:42, y:38, hue:12 },
+    { id:2, x:68, y:52, hue:200 },
+    { id:3, x:28, y:62, hue:330 },
+    { id:4, x:78, y:72, hue:140 },
+    { id:5, x:52, y:78, hue:45 },
+  ];
+
+  return (
+    <div style={{position:'absolute',inset:0,paddingTop:118}}>
+      {/* Map */}
+      <div style={{position:'absolute',inset:'118px 0 0 0',background:'linear-gradient(180deg, var(--sheet-tint-a) 0%, var(--sheet-tint-b) 100%)',overflow:'hidden'}}>
+        <svg width="100%" height="100%" style={{position:'absolute',inset:0,opacity:0.55}}>
+          <defs>
+            <pattern id="grid2" width="36" height="36" patternUnits="userSpaceOnUse">
+              <path d="M36 0H0v36" fill="none" stroke="color-mix(in oklch, var(--accent) 30%, transparent)" strokeWidth="0.5" strokeOpacity="0.4"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid2)"/>
+          {/* Streets */}
+          <path d="M-20 230 Q 120 200, 240 240 T 430 220" stroke="rgba(200,210,230,0.2)" strokeWidth="16" fill="none" strokeLinecap="round"/>
+          <path d="M-20 230 Q 120 200, 240 240 T 430 220" stroke="rgba(200,210,230,0.06)" strokeWidth="1" fill="none" strokeDasharray="4 8"/>
+          <path d="M180 -20 Q 210 140, 180 280 T 220 500" stroke="rgba(200,210,230,0.2)" strokeWidth="12" fill="none" strokeLinecap="round"/>
+          <path d="M180 -20 Q 210 140, 180 280 T 220 500" stroke="rgba(200,210,230,0.06)" strokeWidth="1" fill="none" strokeDasharray="4 8"/>
+          <path d="M-20 400 Q 120 380, 260 420 T 440 410" stroke="rgba(200,210,230,0.14)" strokeWidth="10" fill="none" strokeLinecap="round"/>
+          {/* Park */}
+          <ellipse cx="90" cy="130" rx="100" ry="60" fill="color-mix(in oklch, var(--accent-3) 12%, transparent)" stroke="color-mix(in oklch, var(--accent-3) 40%, transparent)" strokeWidth="0.5"/>
+          <text x="50" y="135" fill="color-mix(in oklch, var(--accent-3) 70%, transparent)" fontSize="9" fontFamily="JetBrains Mono" letterSpacing="2">Pole Mokotowskie</text>
+        </svg>
+
+        {/* Pulse in user center */}
+        <div style={{position:'absolute',left:'50%',top:'40%',transform:'translate(-50%,-50%)'}}>
+          <div style={{position:'absolute',inset:-50,borderRadius:'50%',background:'color-mix(in oklch, var(--accent) 18%, transparent)',animation:'ping 3s ease-out infinite'}}/>
+          <div style={{position:'absolute',inset:-20,borderRadius:'50%',background:'color-mix(in oklch, var(--accent) 30%, transparent)',animation:'ping 3s ease-out 1s infinite'}}/>
+          <div style={{width:20,height:20,borderRadius:'50%',background:'var(--accent)',border:'3px solid var(--ink-1)',boxShadow:'0 0 20px var(--accent)'}}/>
+        </div>
+
+        {/* People pins */}
+        {pins.map(p=>{
+          const person = PEOPLE.find(pp=>pp.id===p.id);
+          const isSel = selected?.id === p.id;
+          return (
+            <button key={p.id} onClick={()=>setSelected(person)} style={{
+              position:'absolute', left:`${p.x}%`, top:`${p.y}%`, transform:'translate(-50%,-50%)',
+              width: isSel ? 42 : 32, height: isSel ? 42 : 32, borderRadius:'50%',
+              background: `hsl(${p.hue} 55% 50%)`,
+              border: isSel ? '3px solid #fff' : '2px solid rgba(0,0,0,0.4)',
+              cursor:'pointer', padding:0, transition:'all 220ms var(--ease-out)',
+              color:'#fff', fontWeight:700, fontSize: isSel ? 15 : 12, fontFamily:'var(--font-sans)',
+              boxShadow: isSel ? `0 0 24px hsl(${p.hue} 55% 50%), 0 8px 20px rgba(0,0,0,0.4)` : `0 6px 16px rgba(0,0,0,0.4)`,
+              zIndex: isSel ? 30 : 20
+            }}>{person.name[0]}</button>
+          );
+        })}
+
+        {/* Filter chips overlay */}
+        <div style={{position:'absolute',top:12,left:12,right:12,display:'flex',gap:6,overflow:'auto'}}>
+          {['wszyscy','30+','biegacze','pies','kawa','muzyka'].map((f,i)=>(
+            <div key={f} className="glass" style={{
+              padding:'6px 12px',borderRadius:100,fontSize:11,
+              background: i===0 ? 'var(--accent)' : 'rgba(15,17,24,0.7)',
+              color: i===0 ? 'var(--on-accent)' : 'var(--text-dim)',
+              border: i===0 ? 'none' : '0.5px solid var(--stroke-strong)',
+              fontWeight: i===0 ? 600 : 500, whiteSpace:'nowrap', flexShrink:0, cursor:'pointer'
+            }}>{f}</div>
+          ))}
+        </div>
+      </div>
+
+      {/* Selected person card — bottom sheet */}
+      {selected && (
+        <div style={{
+          position:'absolute',bottom:16,left:16,right:16,zIndex:40,
+          borderRadius:22,padding:14,
+          background:'rgba(15,17,24,0.92)',
+          border:'0.5px solid var(--stroke-strong)',
+          backdropFilter:'blur(30px) saturate(180%)',
+          boxShadow:'0 20px 40px -10px rgba(0,0,0,0.6)',
+          display:'flex',gap:12,alignItems:'flex-start',
+          animation:'rise 280ms var(--ease-out) both'
+        }} key={selected.id}>
+          <div style={{
+            width:54,height:54,borderRadius:16,flexShrink:0,
+            background:`linear-gradient(135deg, hsl(${selected.hue} 60% 55%), hsl(${selected.hue+30} 45% 30%))`,
+            display:'flex',alignItems:'center',justifyContent:'center',
+            color:'#fff',fontSize:24,fontWeight:700,letterSpacing:'-0.02em'
+          }}>{selected.name[0]}</div>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{display:'flex',alignItems:'baseline',gap:6,marginBottom:2}}>
+              <span style={{fontSize:15,fontWeight:600}}>{selected.name}</span>
+              <span className="num" style={{fontSize:13,color:'var(--text-dim)'}}>{selected.age}</span>
+              <span style={{fontSize:10,color:'var(--text-faint)'}}>·</span>
+              <span className="num" style={{fontSize:10,color:'var(--accent)'}}>{selected.dist}</span>
+            </div>
+            <div style={{fontSize:12,color:'var(--text-dim)',lineHeight:1.4,marginBottom:6,display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical',overflow:'hidden'}}>{selected.bio}</div>
+            <div style={{display:'flex',gap:4,flexWrap:'wrap'}}>
+              {selected.vibes.slice(0,3).map(v=>(
+                <span key={v} style={{padding:'2px 8px',borderRadius:100,fontSize:10,background:'rgba(200,210,230,0.08)',color:'var(--text-dim)'}}>{v}</span>
+              ))}
+            </div>
+          </div>
+          <button style={{
+            width:40,height:40,borderRadius:'50%',border:'none',
+            background:'var(--accent)',cursor:'pointer',flexShrink:0,
+            display:'flex',alignItems:'center',justifyContent:'center',color:'var(--on-accent)',
+            boxShadow:'0 4px 12px color-mix(in oklch, var(--accent) 40%, transparent)'
+          }}><Ic.Message s={18}/></button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Dashboard() {
+  const initial = (window.__HEREE_TWEAKS && window.__HEREE_TWEAKS.dashboardMode) || 'swiping';
+  const [mode, setMode] = useState(initial);
+  useEffect(()=>{ window.__hereeSetDashboardMode = setMode; return ()=>{ delete window.__hereeSetDashboardMode; }; }, []);
+
+  return (
+    <div className="scene scene-enter" style={{padding:0}}>
+      <DashboardHeader mode={mode} setMode={setMode}/>
+      {mode === 'swiping' ? <SwipingMode key="s"/> : <CruisingMode key="c"/>}
+    </div>
+  );
+}
+
+Object.assign(window, { Dashboard });
+
+</script>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+const SCENES = [
+  { id:'splash',    label:'01 Splash' },
+  { id:'phone',     label:'02 Numer' },
+  { id:'otp',       label:'03 Kod SMS' },
+  { id:'loading',   label:'04 Weryfikacja' },
+  { id:'profile',   label:'05 Profil' },
+  { id:'dashboard', label:'06 Dashboard' },
+];
+
+function App() {
+  const initial = (() => { try { return localStorage.getItem('heree2.scene') || 'splash'; } catch(e){ return 'splash'; } })();
+  const [sceneId, setSceneId] = useState(initial);
+  const [phone, setPhone] = useState('');
+  const idx = SCENES.findIndex(s => s.id === sceneId);
+
+  useEffect(()=>{ try { localStorage.setItem('heree2.scene', sceneId); } catch(e){} }, [sceneId]);
+
+  const go = (id) => setSceneId(id);
+  const next = () => { if (idx < SCENES.length - 1) setSceneId(SCENES[idx+1].id); };
+  const prev = () => { if (idx > 0) setSceneId(SCENES[idx-1].id); };
+  const restart = () => { setPhone(''); setSceneId('splash'); };
+
+  let content;
+  if (sceneId === 'splash')        content = <Splash onDone={() => go('phone')}/>;
+  else if (sceneId === 'phone')    content = <Phone onNext={(p)=>{setPhone(p); go('otp');}} onDemo={()=>go('dashboard')}/>;
+  else if (sceneId === 'otp')      content = <Otp phone={phone} onNext={()=>go('loading')} onBack={()=>go('phone')}/>;
+  else if (sceneId === 'loading')  content = <Loading onDone={()=>go('profile')}/>;
+  else if (sceneId === 'profile')  content = <Profile onDone={()=>go('dashboard')}/>;
+  else if (sceneId === 'dashboard')content = <Dashboard/>;
+
+  // expose scene control to tweaks panel
+  useEffect(()=>{ window.__hereeGoScene = go; }, []);
+
+  return (
+    <div className="stage-wrap"><div className="stage">
+      <div className="stage-top">
+        <div className="dots">
+          {SCENES.map((s,i) => (<div key={s.id} className={'dot ' + (i === idx ? 'active' : i < idx ? 'done' : '')}/>))}
+        </div>
+        <div className="stage-label">{SCENES[idx].label}</div>
+      </div>
+      <div className="device" data-screen-label={SCENES[idx].label}>
+        <div className="screen">
+          <div className="app">
+            <StatusBar/>
+            {content}
+            <div className="home-indicator"/>
+          </div>
+        </div>
+      </div>
+      <div className="stage-bottom">
+        <button onClick={prev} disabled={idx === 0} style={{opacity: idx===0 ? 0.35 : 1}}>
+          <Ic.Back/> Wstecz
+        </button>
+        <button onClick={restart}><Ic.Restart/> Restart</button>
+        <button className="primary" onClick={next} disabled={idx === SCENES.length - 1} style={{opacity: idx===SCENES.length-1 ? 0.35 : 1}}>
+          Dalej <Ic.Arrow size={14}/>
+        </button>
+      </div>
+    </div></div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+
+/* Auto-scale stage to viewport */
+function fitStage() {
+  const wrap = document.querySelector('.stage-wrap');
+  if (!wrap) { requestAnimationFrame(fitStage); return; }
+  wrap.style.transform = 'scale(1)';
+  const w = wrap.offsetWidth, h = wrap.offsetHeight;
+  if (!w || !h) { requestAnimationFrame(fitStage); return; }
+  const sx = (window.innerWidth - 24) / w;
+  const sy = (window.innerHeight - 24) / h;
+  wrap.style.transform = `scale(${Math.min(1, sx, sy)})`;
+}
+window.addEventListener('resize', fitStage);
+setTimeout(fitStage, 100); setTimeout(fitStage, 400); setTimeout(fitStage, 1200);
+</script>
+
+<script>
+/* Tweaks panel wiring */
+(function(){
+  const panel = document.getElementById('tweaks-panel');
+  const sceneRow = document.getElementById('tw-scene');
+
+  const SCENE_LIST = [
+    ['splash','splash'], ['phone','numer'], ['otp','kod'],
+    ['loading','loader'], ['profile','profil'], ['dashboard','dash']
+  ];
+  SCENE_LIST.forEach(([id,label])=>{
+    const el = document.createElement('div');
+    el.className = 'pill'; el.dataset.s = id; el.textContent = label;
+    el.addEventListener('click', ()=>{
+      sceneRow.querySelectorAll('.pill').forEach(x=>x.classList.remove('on'));
+      el.classList.add('on');
+      window.__hereeGoScene && window.__hereeGoScene(id);
+    });
+    sceneRow.appendChild(el);
+  });
+
+  document.getElementById('tw-palette').addEventListener('click', e => {
+    const s = e.target.closest('.sw'); if (!s) return;
+    document.documentElement.setAttribute('data-palette', s.dataset.p);
+    document.querySelectorAll('#tw-palette .sw').forEach(x => x.classList.toggle('on', x===s));
+    window.parent.postMessage({type:'__edit_mode_set_keys', edits:{palette:s.dataset.p}}, '*');
+  });
+  document.getElementById('tw-mode').addEventListener('click', e => {
+    const p = e.target.closest('.pill'); if (!p) return;
+    document.querySelectorAll('#tw-mode .pill').forEach(x => x.classList.toggle('on', x===p));
+    window.__hereeSetDashboardMode && window.__hereeSetDashboardMode(p.dataset.m);
+    window.parent.postMessage({type:'__edit_mode_set_keys', edits:{dashboardMode:p.dataset.m}}, '*');
+  });
+
+  window.addEventListener('message', (e) => {
+    const d = e.data || {};
+    if (d.type === '__activate_edit_mode') panel.style.display = 'block';
+    if (d.type === '__deactivate_edit_mode') panel.style.display = 'none';
+  });
+  window.parent.postMessage({type:'__edit_mode_available'}, '*');
+})();
+</script>
+</body>
+</html>

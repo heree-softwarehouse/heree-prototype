@@ -1,0 +1,2859 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Heree — Rejestracja</title>
+<style>
+/* Heree — Liquid Glass iOS */
+:root {
+  --accent: #FF5E3A;
+  --accent-light: #FF8A65;
+  --accent-deep: #E8441E;
+  --text: #1a1411;
+  --muted: #6b5e57;
+  --ink-05: rgba(26,20,17,0.05);
+  --ink-10: rgba(26,20,17,0.10);
+  --ink-20: rgba(26,20,17,0.20);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: #e8e4df;
+  min-height: 100vh;
+}
+
+body {
+  background:
+    radial-gradient(1200px 800px at 10% -10%, #f6e9d8 0%, transparent 60%),
+    radial-gradient(1000px 700px at 120% 100%, #f3d9c3 0%, transparent 55%),
+    #ece6df;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+}
+
+/* App ambient background (lives inside device) */
+.heree-ambient {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+.heree-ambient::before,
+.heree-ambient::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.85;
+}
+.heree-ambient::before {
+  width: 420px; height: 420px;
+  background: radial-gradient(circle, #FFB38A 0%, #FF7A45 55%, transparent 70%);
+  top: -120px; left: -80px;
+  animation: blobA 18s ease-in-out infinite;
+}
+.heree-ambient::after {
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, #FFD7A8 0%, #FF9466 60%, transparent 75%);
+  bottom: -140px; right: -100px;
+  animation: blobB 22s ease-in-out infinite;
+}
+@keyframes blobA {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, 60px) scale(1.1); }
+}
+@keyframes blobB {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-30px, -40px) scale(1.08); }
+}
+
+/* Liquid glass surface */
+.glass {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 0.5px solid rgba(255,255,255,0.6);
+  box-shadow:
+    inset 1.5px 1.5px 1px rgba(255,255,255,0.7),
+    inset -1px -1px 1px rgba(255,255,255,0.3),
+    0 6px 24px rgba(138, 67, 30, 0.08),
+    0 2px 6px rgba(138, 67, 30, 0.06);
+}
+.glass-dark {
+  background: rgba(26, 20, 17, 0.35);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 0.5px solid rgba(255,255,255,0.15);
+  box-shadow:
+    inset 1.5px 1.5px 1px rgba(255,255,255,0.15),
+    0 6px 24px rgba(0,0,0,0.2);
+}
+
+/* Shake animation for wrong OTP */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-8px); }
+  30% { transform: translateX(8px); }
+  45% { transform: translateX(-6px); }
+  60% { transform: translateX(6px); }
+  75% { transform: translateX(-3px); }
+  90% { transform: translateX(3px); }
+}
+.shake { animation: shake 0.5s ease-in-out; }
+
+/* Haptic ripple */
+@keyframes haptic {
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+.haptic-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid var(--accent);
+  pointer-events: none;
+  animation: haptic 0.4s ease-out forwards;
+}
+
+/* Splash pulse */
+@keyframes splashPulse {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+@keyframes splashRing {
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Rotating loader */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Scene transition */
+.scene-enter { animation: fadeIn 0.45s ease-out both; }
+
+/* Button press */
+.press:active { transform: scale(0.97); transition: transform 0.08s; }
+
+/* Text select off inside app */
+.app * { user-select: none; -webkit-user-select: none; }
+
+/* Map pin pulse */
+@keyframes pinPulse {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(3); opacity: 0; }
+}
+
+/* Dashboard shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* No scroll on device */
+.no-scroll { overflow: hidden !important; }
+
+/* SF Pro Rounded fallback for numbers */
+.num {
+  font-family: "SF Pro Rounded", -apple-system, system-ui;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "ss01";
+}
+
+/* Heree wordmark */
+.wordmark {
+  font-family: -apple-system, "SF Pro Display", system-ui;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+</style>
+<style>
+/* Inline critical CSS fallback */
+:root{--accent:#FF4A1E;--accent-light:#FF8A65;--accent-deep:#E8441E;--text:#1a1411;--muted:#6b5e57}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
+body{background:radial-gradient(1200px 800px at 10% -10%,#f6e9d8 0%,transparent 60%),radial-gradient(1000px 700px at 120% 100%,#f3d9c3 0%,transparent 55%),#ece6df;display:flex;align-items:center;justify-content:center;padding:48px 24px}
+.glass{background:rgba(255,255,255,0.45);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border:0.5px solid rgba(255,255,255,0.6);box-shadow:inset 1.5px 1.5px 1px rgba(255,255,255,0.7),inset -1px -1px 1px rgba(255,255,255,0.3),0 6px 24px rgba(138,67,30,0.08)}
+@keyframes shake{0%,100%{transform:translateX(0)}15%{transform:translateX(-8px)}30%{transform:translateX(8px)}45%{transform:translateX(-6px)}60%{transform:translateX(6px)}75%{transform:translateX(-3px)}90%{transform:translateX(3px)}}
+.shake{animation:shake 0.5s ease-in-out}
+@keyframes splashPulse{0%,100%{transform:scale(1);opacity:0.9}50%{transform:scale(1.08);opacity:1}}
+@keyframes splashRing{0%{transform:scale(1);opacity:0.5}100%{transform:scale(2.5);opacity:0}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeOut{from{opacity:1}to{opacity:0}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pinPulse{0%{transform:scale(1);opacity:1}100%{transform:scale(3);opacity:0}}
+.scene-enter{animation:fadeIn 0.45s ease-out both}
+.press:active{transform:scale(0.97);transition:transform 0.08s}
+.app *{user-select:none;-webkit-user-select:none}
+.num{font-family:"SF Pro Rounded",-apple-system,system-ui;font-variant-numeric:tabular-nums}
+.wordmark{font-family:-apple-system,"SF Pro Display",system-ui;font-weight:800;letter-spacing:-0.04em}
+</style>
+
+<script>
+try { localStorage.removeItem('heree.scene'); } catch(e) {}
+</script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
+
+<style>
+  body { background: #e4ddd3; }
+  .stage {
+    display: flex; flex-direction: column; align-items: center; gap: 18px;
+  }
+  .stage-chrome {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; color: #6b5e57; letter-spacing: 0.02em;
+    font-family: -apple-system, system-ui;
+  }
+  .step-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(26,20,17,0.15);
+    transition: all 0.3s;
+  }
+  .step-dot.active {
+    background: #FF4A1E; width: 20px; border-radius: 4px;
+  }
+  .step-dot.done {
+    background: #FF8A65;
+  }
+  .chip-nav {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 100px;
+    background: rgba(255,255,255,0.7); backdrop-filter: blur(10px);
+    border: 0.5px solid rgba(26,20,17,0.08);
+    font-size: 12px; color: #1a1411; font-weight: 500;
+    cursor: pointer; user-select: none;
+  }
+  .chip-nav:hover { background: rgba(255,255,255,0.95); }
+
+  /* Tweaks panel */
+  .tweaks {
+    position: fixed; right: 20px; bottom: 20px; z-index: 100;
+    width: 260px; padding: 16px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 0.5px solid rgba(255,255,255,0.8);
+    border-radius: 20px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+    font-family: -apple-system, system-ui;
+    display: none;
+  }
+  .tweaks.open { display: block; animation: slideUp 0.2s ease-out; }
+  .tweaks h3 {
+    margin: 0 0 12px; font-size: 14px; font-weight: 700;
+    color: #1a1411; letter-spacing: -0.01em;
+  }
+  .tweaks label {
+    display: block; font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: #6b5e57; margin: 10px 0 6px;
+  }
+  .tweak-group {
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .tweak-btn {
+    padding: 6px 10px; border-radius: 8px;
+    border: 0.5px solid rgba(26,20,17,0.1);
+    background: rgba(255,255,255,0.6);
+    font-size: 12px; cursor: pointer;
+    font-family: inherit; color: #1a1411;
+  }
+  .tweak-btn.sel {
+    background: #FF4A1E; color: #fff; border-color: transparent;
+  }
+  .tweak-color {
+    width: 26px; height: 26px; border-radius: 8px;
+    cursor: pointer; border: 2px solid transparent;
+  }
+  .tweak-color.sel { border-color: #1a1411; }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script>
+// ===== ios-frame.jsx =====
+
+// iOS.jsx — Simplified iOS 26 (Liquid Glass) device frame
+// Based on the iOS 26 UI Kit + Figma status bar spec. No assets, no deps.
+// Exports: IOSDevice, IOSStatusBar, IOSNavBar, IOSGlassPill, IOSList, IOSListRow, IOSKeyboard
+
+// ─────────────────────────────────────────────────────────────
+// Status bar
+// ─────────────────────────────────────────────────────────────
+function IOSStatusBar({
+  dark = false,
+  time = '9:41'
+}) {
+  const c = dark ? '#fff' : '#000';
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 154,
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '21px 24px 19px',
+      boxSizing: 'border-box',
+      position: 'relative',
+      zIndex: 20,
+      width: '100%'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      height: 22,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingTop: 1.5
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: '-apple-system, "SF Pro", system-ui',
+      fontWeight: 590,
+      fontSize: 17,
+      lineHeight: '22px',
+      color: c
+    }
+  }, time)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      height: 22,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 7,
+      paddingTop: 1,
+      paddingRight: 1
+    }
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "19",
+    height: "12",
+    viewBox: "0 0 19 12"
+  }, /*#__PURE__*/React.createElement("rect", {
+    x: "0",
+    y: "7.5",
+    width: "3.2",
+    height: "4.5",
+    rx: "0.7",
+    fill: c
+  }), /*#__PURE__*/React.createElement("rect", {
+    x: "4.8",
+    y: "5",
+    width: "3.2",
+    height: "7",
+    rx: "0.7",
+    fill: c
+  }), /*#__PURE__*/React.createElement("rect", {
+    x: "9.6",
+    y: "2.5",
+    width: "3.2",
+    height: "9.5",
+    rx: "0.7",
+    fill: c
+  }), /*#__PURE__*/React.createElement("rect", {
+    x: "14.4",
+    y: "0",
+    width: "3.2",
+    height: "12",
+    rx: "0.7",
+    fill: c
+  })), /*#__PURE__*/React.createElement("svg", {
+    width: "17",
+    height: "12",
+    viewBox: "0 0 17 12"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M8.5 3.2C10.8 3.2 12.9 4.1 14.4 5.6L15.5 4.5C13.7 2.7 11.2 1.5 8.5 1.5C5.8 1.5 3.3 2.7 1.5 4.5L2.6 5.6C4.1 4.1 6.2 3.2 8.5 3.2Z",
+    fill: c
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M8.5 6.8C9.9 6.8 11.1 7.3 12 8.2L13.1 7.1C11.8 5.9 10.2 5.1 8.5 5.1C6.8 5.1 5.2 5.9 3.9 7.1L5 8.2C5.9 7.3 7.1 6.8 8.5 6.8Z",
+    fill: c
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "8.5",
+    cy: "10.5",
+    r: "1.5",
+    fill: c
+  })), /*#__PURE__*/React.createElement("svg", {
+    width: "27",
+    height: "13",
+    viewBox: "0 0 27 13"
+  }, /*#__PURE__*/React.createElement("rect", {
+    x: "0.5",
+    y: "0.5",
+    width: "23",
+    height: "12",
+    rx: "3.5",
+    stroke: c,
+    strokeOpacity: "0.35",
+    fill: "none"
+  }), /*#__PURE__*/React.createElement("rect", {
+    x: "2",
+    y: "2",
+    width: "20",
+    height: "9",
+    rx: "2",
+    fill: c
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M25 4.5V8.5C25.8 8.2 26.5 7.2 26.5 6.5C26.5 5.8 25.8 4.8 25 4.5Z",
+    fill: c,
+    fillOpacity: "0.4"
+  }))));
+}
+
+// ─────────────────────────────────────────────────────────────
+// Liquid glass pill — blur + tint + shine
+// ─────────────────────────────────────────────────────────────
+function IOSGlassPill({
+  children,
+  dark = false,
+  style = {}
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: 44,
+      minWidth: 44,
+      borderRadius: 9999,
+      position: 'relative',
+      overflow: 'hidden',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      boxShadow: dark ? '0 2px 6px rgba(0,0,0,0.35), 0 6px 16px rgba(0,0,0,0.2)' : '0 1px 3px rgba(0,0,0,0.07), 0 3px 10px rgba(0,0,0,0.06)',
+      ...style
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      inset: 0,
+      borderRadius: 9999,
+      backdropFilter: 'blur(12px) saturate(180%)',
+      WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+      background: dark ? 'rgba(120,120,128,0.28)' : 'rgba(255,255,255,0.5)'
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      inset: 0,
+      borderRadius: 9999,
+      boxShadow: dark ? 'inset 1.5px 1.5px 1px rgba(255,255,255,0.15), inset -1px -1px 1px rgba(255,255,255,0.08)' : 'inset 1.5px 1.5px 1px rgba(255,255,255,0.7), inset -1px -1px 1px rgba(255,255,255,0.4)',
+      border: dark ? '0.5px solid rgba(255,255,255,0.15)' : '0.5px solid rgba(0,0,0,0.06)'
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'relative',
+      zIndex: 1,
+      display: 'flex',
+      alignItems: 'center',
+      padding: '0 4px'
+    }
+  }, children));
+}
+
+// ─────────────────────────────────────────────────────────────
+// Navigation bar — glass pills + large title
+// ─────────────────────────────────────────────────────────────
+function IOSNavBar({
+  title = 'Title',
+  dark = false,
+  trailingIcon = true
+}) {
+  const muted = dark ? 'rgba(255,255,255,0.6)' : '#404040';
+  const text = dark ? '#fff' : '#000';
+  const pillIcon = content => /*#__PURE__*/React.createElement(IOSGlassPill, {
+    dark: dark
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 36,
+      height: 36,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }
+  }, content));
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 10,
+      paddingTop: 62,
+      paddingBottom: 10,
+      position: 'relative',
+      zIndex: 5
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: '0 16px'
+    }
+  }, pillIcon(/*#__PURE__*/React.createElement("svg", {
+    width: "12",
+    height: "20",
+    viewBox: "0 0 12 20",
+    fill: "none",
+    style: {
+      marginLeft: -1
+    }
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M10 2L2 10l8 8",
+    stroke: muted,
+    strokeWidth: "2.5",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  }))), trailingIcon && pillIcon(/*#__PURE__*/React.createElement("svg", {
+    width: "22",
+    height: "6",
+    viewBox: "0 0 22 6"
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "3",
+    cy: "3",
+    r: "2.5",
+    fill: muted
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "11",
+    cy: "3",
+    r: "2.5",
+    fill: muted
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "19",
+    cy: "3",
+    r: "2.5",
+    fill: muted
+  })))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '0 16px',
+      fontFamily: '-apple-system, system-ui',
+      fontSize: 34,
+      fontWeight: 700,
+      lineHeight: '41px',
+      color: text,
+      letterSpacing: 0.4
+    }
+  }, title));
+}
+
+// ─────────────────────────────────────────────────────────────
+// Grouped list (inset card, r:26) + row (52px)
+// ─────────────────────────────────────────────────────────────
+function IOSListRow({
+  title,
+  detail,
+  icon,
+  chevron = true,
+  isLast = false,
+  dark = false
+}) {
+  const text = dark ? '#fff' : '#000';
+  const sec = dark ? 'rgba(235,235,245,0.6)' : 'rgba(60,60,67,0.6)';
+  const ter = dark ? 'rgba(235,235,245,0.3)' : 'rgba(60,60,67,0.3)';
+  const sep = dark ? 'rgba(84,84,88,0.65)' : 'rgba(60,60,67,0.12)';
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      minHeight: 52,
+      padding: '0 16px',
+      position: 'relative',
+      fontFamily: '-apple-system, system-ui',
+      fontSize: 17,
+      letterSpacing: -0.43
+    }
+  }, icon && /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 30,
+      height: 30,
+      borderRadius: 7,
+      background: icon,
+      marginRight: 12,
+      flexShrink: 0
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      color: text
+    }
+  }, title), detail && /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: sec,
+      marginRight: 6
+    }
+  }, detail), chevron && /*#__PURE__*/React.createElement("svg", {
+    width: "8",
+    height: "14",
+    viewBox: "0 0 8 14",
+    style: {
+      flexShrink: 0
+    }
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M1 1l6 6-6 6",
+    stroke: ter,
+    strokeWidth: "2",
+    fill: "none",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  })), !isLast && /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
+      left: icon ? 58 : 16,
+      height: 0.5,
+      background: sep
+    }
+  }));
+}
+function IOSList({
+  header,
+  children,
+  dark = false
+}) {
+  const hc = dark ? 'rgba(235,235,245,0.6)' : 'rgba(60,60,67,0.6)';
+  const bg = dark ? '#1C1C1E' : '#fff';
+  return /*#__PURE__*/React.createElement("div", null, header && /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: '-apple-system, system-ui',
+      fontSize: 13,
+      color: hc,
+      textTransform: 'uppercase',
+      padding: '8px 36px 6px',
+      letterSpacing: -0.08
+    }
+  }, header), /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: bg,
+      borderRadius: 26,
+      margin: '0 16px',
+      overflow: 'hidden'
+    }
+  }, children));
+}
+
+// ─────────────────────────────────────────────────────────────
+// Device frame
+// ─────────────────────────────────────────────────────────────
+function IOSDevice({
+  children,
+  width = 402,
+  height = 874,
+  dark = false,
+  title,
+  keyboard = false
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      width,
+      height,
+      borderRadius: 48,
+      overflow: 'hidden',
+      position: 'relative',
+      background: dark ? '#000' : '#F2F2F7',
+      boxShadow: '0 40px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.12)',
+      fontFamily: '-apple-system, system-ui, sans-serif',
+      WebkitFontSmoothing: 'antialiased'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      top: 11,
+      left: '50%',
+      transform: 'translateX(-50%)',
+      width: 126,
+      height: 37,
+      borderRadius: 24,
+      background: '#000',
+      zIndex: 50
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      zIndex: 10
+    }
+  }, /*#__PURE__*/React.createElement(IOSStatusBar, {
+    dark: dark
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column'
+    }
+  }, title !== undefined && /*#__PURE__*/React.createElement(IOSNavBar, {
+    title: title,
+    dark: dark
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      overflow: 'auto'
+    }
+  }, children), keyboard && /*#__PURE__*/React.createElement(IOSKeyboard, {
+    dark: dark
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      zIndex: 60,
+      height: 34,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'flex-end',
+      paddingBottom: 8,
+      pointerEvents: 'none'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 139,
+      height: 5,
+      borderRadius: 100,
+      background: dark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.25)'
+    }
+  })));
+}
+
+// ─────────────────────────────────────────────────────────────
+// Keyboard — iOS 26 liquid glass
+// ─────────────────────────────────────────────────────────────
+function IOSKeyboard({
+  dark = false
+}) {
+  const glyph = dark ? 'rgba(255,255,255,0.7)' : '#595959';
+  const sugg = dark ? 'rgba(255,255,255,0.6)' : '#333';
+  const keyBg = dark ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.85)';
+
+  // special-key icons
+  const icons = {
+    shift: /*#__PURE__*/React.createElement("svg", {
+      width: "19",
+      height: "17",
+      viewBox: "0 0 19 17"
+    }, /*#__PURE__*/React.createElement("path", {
+      d: "M9.5 1L1 9.5h4.5V16h8V9.5H18L9.5 1z",
+      fill: glyph
+    })),
+    del: /*#__PURE__*/React.createElement("svg", {
+      width: "23",
+      height: "17",
+      viewBox: "0 0 23 17"
+    }, /*#__PURE__*/React.createElement("path", {
+      d: "M7 1h13a2 2 0 012 2v11a2 2 0 01-2 2H7l-6-7.5L7 1z",
+      fill: "none",
+      stroke: glyph,
+      strokeWidth: "1.6",
+      strokeLinejoin: "round"
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M10 5l7 7M17 5l-7 7",
+      stroke: glyph,
+      strokeWidth: "1.6",
+      strokeLinecap: "round"
+    })),
+    ret: /*#__PURE__*/React.createElement("svg", {
+      width: "20",
+      height: "14",
+      viewBox: "0 0 20 14"
+    }, /*#__PURE__*/React.createElement("path", {
+      d: "M18 1v6H4m0 0l4-4M4 7l4 4",
+      fill: "none",
+      stroke: "#fff",
+      strokeWidth: "1.8",
+      strokeLinecap: "round",
+      strokeLinejoin: "round"
+    }))
+  };
+  const key = (content, {
+    w,
+    flex,
+    ret,
+    fs = 25,
+    k
+  } = {}) => /*#__PURE__*/React.createElement("div", {
+    key: k,
+    style: {
+      height: 42,
+      borderRadius: 8.5,
+      flex: flex ? 1 : undefined,
+      width: w,
+      minWidth: 0,
+      background: ret ? '#08f' : keyBg,
+      boxShadow: '0 1px 0 rgba(0,0,0,0.075)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontFamily: '-apple-system, "SF Compact", system-ui',
+      fontSize: fs,
+      fontWeight: 458,
+      color: ret ? '#fff' : glyph
+    }
+  }, content);
+  const row = (keys, pad = 0) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 6.5,
+      justifyContent: 'center',
+      padding: `0 ${pad}px`
+    }
+  }, keys.map(l => key(l, {
+    flex: true,
+    k: l
+  })));
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'relative',
+      zIndex: 15,
+      borderRadius: 27,
+      overflow: 'hidden',
+      padding: '11px 0 2px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      boxShadow: dark ? '0 -2px 20px rgba(0,0,0,0.09)' : '0 -1px 6px rgba(0,0,0,0.018), 0 -3px 20px rgba(0,0,0,0.012)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      inset: 0,
+      borderRadius: 27,
+      backdropFilter: 'blur(12px) saturate(180%)',
+      WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+      background: dark ? 'rgba(120,120,128,0.14)' : 'rgba(255,255,255,0.25)'
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      inset: 0,
+      borderRadius: 27,
+      boxShadow: dark ? 'inset 1.5px 1.5px 1px rgba(255,255,255,0.15)' : 'inset 1.5px 1.5px 1px rgba(255,255,255,0.7), inset -1px -1px 1px rgba(255,255,255,0.4)',
+      border: dark ? '0.5px solid rgba(255,255,255,0.15)' : '0.5px solid rgba(0,0,0,0.06)',
+      pointerEvents: 'none'
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 20,
+      alignItems: 'center',
+      padding: '8px 22px 13px',
+      width: '100%',
+      boxSizing: 'border-box',
+      position: 'relative'
+    }
+  }, ['"The"', 'the', 'to'].map((w, i) => /*#__PURE__*/React.createElement(React.Fragment, {
+    key: i
+  }, i > 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 1,
+      height: 25,
+      background: '#ccc',
+      opacity: 0.3
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      textAlign: 'center',
+      fontFamily: '-apple-system, system-ui',
+      fontSize: 17,
+      color: sugg,
+      letterSpacing: -0.43,
+      lineHeight: '22px'
+    }
+  }, w)))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 13,
+      padding: '0 6.5px',
+      width: '100%',
+      boxSizing: 'border-box',
+      position: 'relative'
+    }
+  }, row(['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p']), row(['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'], 20), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 14.25,
+      alignItems: 'center'
+    }
+  }, key(icons.shift, {
+    w: 45,
+    k: 'shift'
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 6.5,
+      flex: 1
+    }
+  }, ['z', 'x', 'c', 'v', 'b', 'n', 'm'].map(l => key(l, {
+    flex: true,
+    k: l
+  }))), key(icons.del, {
+    w: 45,
+    k: 'del'
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 6,
+      alignItems: 'center'
+    }
+  }, key('ABC', {
+    w: 92.25,
+    fs: 18,
+    k: 'abc'
+  }), key('', {
+    flex: true,
+    k: 'space'
+  }), key(icons.ret, {
+    w: 92.25,
+    ret: true,
+    k: 'ret'
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: 56,
+      width: '100%',
+      position: 'relative'
+    }
+  }));
+}
+Object.assign(window, {
+  IOSDevice,
+  IOSStatusBar,
+  IOSNavBar,
+  IOSGlassPill,
+  IOSList,
+  IOSListRow,
+  IOSKeyboard
+});
+
+// ===== components/HereeLogo.jsx =====
+// Heree logo — pin + wordmark
+function HereePin({
+  size = 56,
+  glow = true
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'relative',
+      width: size,
+      height: size,
+      display: 'inline-block'
+    }
+  }, glow && /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      inset: -8,
+      borderRadius: '50%',
+      background: 'radial-gradient(circle, rgba(255,94,58,0.35) 0%, transparent 65%)',
+      filter: 'blur(6px)'
+    }
+  }), /*#__PURE__*/React.createElement("svg", {
+    width: size,
+    height: size,
+    viewBox: "0 0 56 56",
+    style: {
+      position: 'relative'
+    }
+  }, /*#__PURE__*/React.createElement("defs", null, /*#__PURE__*/React.createElement("linearGradient", {
+    id: "pinGrad",
+    x1: "0",
+    y1: "0",
+    x2: "0",
+    y2: "1"
+  }, /*#__PURE__*/React.createElement("stop", {
+    offset: "0",
+    stopColor: "#FF8A65"
+  }), /*#__PURE__*/React.createElement("stop", {
+    offset: "1",
+    stopColor: "#FF4A1E"
+  })), /*#__PURE__*/React.createElement("radialGradient", {
+    id: "pinShine",
+    cx: "0.35",
+    cy: "0.3",
+    r: "0.5"
+  }, /*#__PURE__*/React.createElement("stop", {
+    offset: "0",
+    stopColor: "#fff",
+    stopOpacity: "0.55"
+  }), /*#__PURE__*/React.createElement("stop", {
+    offset: "1",
+    stopColor: "#fff",
+    stopOpacity: "0"
+  }))), /*#__PURE__*/React.createElement("path", {
+    d: "M28 4 C38 4 46 12 46 22 C46 32 36 44 28 52 C20 44 10 32 10 22 C10 12 18 4 28 4 Z",
+    fill: "url(#pinGrad)"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M28 4 C38 4 46 12 46 22 C46 32 36 44 28 52 C20 44 10 32 10 22 C10 12 18 4 28 4 Z",
+    fill: "url(#pinShine)"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "28",
+    cy: "22",
+    r: "7",
+    fill: "#fff"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "28",
+    cy: "22",
+    r: "7",
+    fill: "url(#pinShine)",
+    opacity: "0.4"
+  })));
+}
+function HereeWordmark({
+  size = 42,
+  color = '#1a1411'
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "wordmark",
+    style: {
+      fontSize: size,
+      color,
+      lineHeight: 1,
+      letterSpacing: '-0.05em',
+      display: 'flex',
+      alignItems: 'baseline',
+      gap: 0
+    }
+  }, /*#__PURE__*/React.createElement("span", null, "here"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--accent)'
+    }
+  }, "e."));
+}
+Object.assign(window, {
+  HereePin,
+  HereeWordmark
+});
+
+// ===== components/NumericKeypad.jsx =====
+// Custom numeric keypad — iOS Liquid Glass
+function NumericKeypad({
+  onPress,
+  onDelete,
+  disabled = false
+}) {
+  const [pressed, setPressed] = React.useState(null);
+  const keys = [['1', ''], ['2', 'ABC'], ['3', 'DEF'], ['4', 'GHI'], ['5', 'JKL'], ['6', 'MNO'], ['7', 'PQRS'], ['8', 'TUV'], ['9', 'WXYZ'], ['', ''], ['0', '+'], ['del', '']];
+  const handlePress = k => {
+    if (disabled) return;
+    setPressed(k);
+    setTimeout(() => setPressed(null), 120);
+    if (k === 'del') onDelete && onDelete();else if (k) onPress && onPress(k);
+  };
+  const keyStyle = active => ({
+    height: 58,
+    borderRadius: 16,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    overflow: 'hidden',
+    background: active ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.55)',
+    backdropFilter: 'blur(20px) saturate(180%)',
+    WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+    border: '0.5px solid rgba(255,255,255,0.7)',
+    boxShadow: active ? '0 2px 4px rgba(138,67,30,0.08), inset 0 1px 0 rgba(255,255,255,0.8)' : 'inset 1px 1px 0 rgba(255,255,255,0.7), inset -1px -1px 0 rgba(255,255,255,0.25), 0 1px 2px rgba(138,67,30,0.04)',
+    transform: active ? 'scale(0.96)' : 'scale(1)',
+    transition: 'transform 0.1s, background 0.1s',
+    cursor: 'pointer',
+    color: 'var(--text)'
+  });
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(3, 1fr)',
+      gap: 10,
+      padding: '0 16px'
+    }
+  }, keys.map(([k, sub], i) => {
+    if (k === '') return /*#__PURE__*/React.createElement("div", {
+      key: i
+    });
+    const active = pressed === k;
+    return /*#__PURE__*/React.createElement("div", {
+      key: i,
+      style: keyStyle(active),
+      onClick: () => handlePress(k)
+    }, k === 'del' ? /*#__PURE__*/React.createElement("svg", {
+      width: "28",
+      height: "22",
+      viewBox: "0 0 28 22"
+    }, /*#__PURE__*/React.createElement("path", {
+      d: "M9 1h16a2 2 0 012 2v16a2 2 0 01-2 2H9l-8-10 8-10z",
+      fill: "none",
+      stroke: "#1a1411",
+      strokeWidth: "1.6",
+      strokeLinejoin: "round"
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M13 7l7 7M20 7l-7 7",
+      stroke: "#1a1411",
+      strokeWidth: "1.6",
+      strokeLinecap: "round"
+    })) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+      className: "num",
+      style: {
+        fontSize: 30,
+        fontWeight: 400,
+        lineHeight: 1,
+        letterSpacing: '-0.02em'
+      }
+    }, k), sub && /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 9,
+        fontWeight: 600,
+        letterSpacing: '0.18em',
+        color: 'var(--muted)',
+        marginTop: 2
+      }
+    }, sub)));
+  }));
+}
+Object.assign(window, {
+  NumericKeypad
+});
+
+// ===== components/SplashScreen.jsx =====
+// Splash — pulsing pin + wordmark, auto-transitions after 1.5s
+function SplashScreen({
+  onDone
+}) {
+  React.useEffect(() => {
+    const t = setTimeout(() => onDone && onDone(), 1800);
+    return () => clearTimeout(t);
+  }, []);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "scene-enter",
+    style: {
+      position: 'absolute',
+      inset: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 28,
+      zIndex: 2
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'relative',
+      width: 120,
+      height: 120,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }
+  }, [0, 0.6, 1.2].map((delay, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: {
+      position: 'absolute',
+      width: 80,
+      height: 80,
+      borderRadius: '50%',
+      border: '2px solid rgba(255,94,58,0.45)',
+      animation: `splashRing 2s ${delay}s ease-out infinite`
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      animation: 'splashPulse 2s ease-in-out infinite'
+    }
+  }, /*#__PURE__*/React.createElement(HereePin, {
+    size: 80
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      animation: 'fadeIn 0.8s 0.2s both'
+    }
+  }, /*#__PURE__*/React.createElement(HereeWordmark, {
+    size: 48
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "num",
+    style: {
+      animation: 'fadeIn 0.8s 0.5s both',
+      fontSize: 14,
+      color: 'var(--muted)',
+      letterSpacing: '0.14em',
+      textTransform: 'uppercase',
+      fontWeight: 500,
+      marginTop: 4
+    }
+  }, "Znajd\u017A swoich ludzi"));
+}
+Object.assign(window, {
+  SplashScreen
+});
+
+// ===== components/PhoneScreen.jsx =====
+// Phone number screen — playful copy, custom keypad, Try Demo CTA
+function PhoneScreen({
+  onContinue,
+  onDemo
+}) {
+  const [number, setNumber] = React.useState('');
+  const [country, setCountry] = React.useState({
+    flag: '🇵🇱',
+    code: '+48',
+    name: 'Polska'
+  });
+  const [showCountrySheet, setShowCountrySheet] = React.useState(false);
+  const formatPL = n => {
+    const d = n.replace(/\D/g, '').slice(0, 9);
+    const parts = [d.slice(0, 3), d.slice(3, 6), d.slice(6, 9)].filter(Boolean);
+    return parts.join(' ');
+  };
+  const addDigit = d => setNumber(n => n.replace(/\D/g, '').length < 9 ? n + d : n);
+  const del = () => setNumber(n => n.slice(0, -1));
+  const isValid = number.replace(/\D/g, '').length === 9;
+  const display = formatPL(number);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "scene-enter",
+    style: {
+      position: 'absolute',
+      inset: 0,
+      zIndex: 2,
+      display: 'flex',
+      flexDirection: 'column',
+      paddingTop: 72
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: '8px 20px 0'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement(HereePin, {
+    size: 28,
+    glow: false
+  }), /*#__PURE__*/React.createElement(HereeWordmark, {
+    size: 22
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "press",
+    onClick: onDemo,
+    style: {
+      height: 34,
+      padding: '0 14px',
+      borderRadius: 100,
+      background: 'rgba(26,20,17,0.06)',
+      backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
+      border: '0.5px solid rgba(26,20,17,0.08)',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 6,
+      fontSize: 13,
+      fontWeight: 600,
+      color: 'var(--text)',
+      cursor: 'pointer',
+      letterSpacing: '-0.01em'
+    }
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "12",
+    height: "12",
+    viewBox: "0 0 12 12"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M3 2.5v7l6-3.5-6-3.5z",
+    fill: "var(--accent)"
+  })), "See Demo")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '32px 24px 8px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 34,
+      fontWeight: 700,
+      letterSpacing: '-0.03em',
+      lineHeight: 1.08,
+      color: 'var(--text)'
+    }
+  }, "Gdzie Ci\u0119", /*#__PURE__*/React.createElement("br", null), "znajdziemy? ", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--accent)'
+    }
+  }, "\uD83D\uDC4B")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 10,
+      fontSize: 15,
+      lineHeight: 1.4,
+      color: 'var(--muted)',
+      fontWeight: 400,
+      letterSpacing: '-0.01em',
+      textWrap: 'pretty',
+      maxWidth: 320
+    }
+  }, "Podaj numer \u2014 wy\u015Blemy kod i zaczniemy. Bez hase\u0142, bez dramat\xF3w.")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '24px 20px 0'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "glass",
+    style: {
+      borderRadius: 20,
+      padding: '18px 18px',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 12
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "press",
+    onClick: () => setShowCountrySheet(true),
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 8,
+      paddingRight: 12,
+      borderRight: '1px solid rgba(26,20,17,0.12)',
+      cursor: 'pointer'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 22,
+      lineHeight: 1
+    }
+  }, country.flag), /*#__PURE__*/React.createElement("span", {
+    className: "num",
+    style: {
+      fontSize: 22,
+      fontWeight: 500,
+      color: 'var(--text)',
+      letterSpacing: '-0.01em'
+    }
+  }, country.code), /*#__PURE__*/React.createElement("svg", {
+    width: "10",
+    height: "6",
+    viewBox: "0 0 10 6"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M1 1l4 4 4-4",
+    stroke: "var(--muted)",
+    strokeWidth: "1.6",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    fill: "none"
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "num",
+    style: {
+      flex: 1,
+      fontSize: 24,
+      fontWeight: 500,
+      color: display ? 'var(--text)' : 'rgba(26,20,17,0.3)',
+      letterSpacing: '0.01em',
+      minHeight: 30,
+      display: 'flex',
+      alignItems: 'center'
+    }
+  }, display || '600 000 000', display && /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: 'inline-block',
+      width: 2,
+      height: 24,
+      background: 'var(--accent)',
+      marginLeft: 3,
+      animation: 'fadeIn 0.5s ease-in-out infinite alternate'
+    }
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 12,
+      fontSize: 12,
+      color: 'var(--muted)',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 6,
+      letterSpacing: '-0.01em'
+    }
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "12",
+    height: "12",
+    viewBox: "0 0 12 12"
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "6",
+    cy: "6",
+    r: "5",
+    fill: "none",
+    stroke: "var(--muted)",
+    strokeWidth: "1.2"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M6 3.5v3M6 8v.5",
+    stroke: "var(--muted)",
+    strokeWidth: "1.4",
+    strokeLinecap: "round"
+  })), "Nie spamujemy. Numer trzymamy tylko do weryfikacji.")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '0 20px 16px'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "press",
+    disabled: !isValid,
+    onClick: () => isValid && onContinue && onContinue(country.code + ' ' + display),
+    style: {
+      width: '100%',
+      height: 56,
+      borderRadius: 20,
+      border: 'none',
+      background: isValid ? 'linear-gradient(180deg, #FF7A55 0%, #FF4A1E 100%)' : 'rgba(26,20,17,0.08)',
+      color: isValid ? '#fff' : 'rgba(26,20,17,0.35)',
+      fontSize: 17,
+      fontWeight: 600,
+      letterSpacing: '-0.01em',
+      cursor: isValid ? 'pointer' : 'not-allowed',
+      boxShadow: isValid ? '0 8px 20px rgba(255,74,30,0.3), inset 0 1px 0 rgba(255,255,255,0.3)' : 'none',
+      transition: 'all 0.2s',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 8
+    }
+  }, "Wy\u015Blij kod", isValid && /*#__PURE__*/React.createElement("svg", {
+    width: "16",
+    height: "14",
+    viewBox: "0 0 16 14"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M1 7h13m-5-5l5 5-5 5",
+    stroke: "#fff",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    fill: "none"
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 14,
+      textAlign: 'center',
+      fontSize: 11,
+      color: 'var(--muted)',
+      lineHeight: 1.45,
+      letterSpacing: '-0.01em'
+    }
+  }, "Klikaj\u0105c dalej akceptujesz ", /*#__PURE__*/React.createElement("u", null, "Regulamin"), " i ", /*#__PURE__*/React.createElement("u", null, "Polityk\u0119 prywatno\u015Bci"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      paddingBottom: 40
+    }
+  }, /*#__PURE__*/React.createElement(NumericKeypad, {
+    onPress: addDigit,
+    onDelete: del
+  })), showCountrySheet && /*#__PURE__*/React.createElement(CountrySheet, {
+    current: country,
+    onPick: c => {
+      setCountry(c);
+      setShowCountrySheet(false);
+    },
+    onClose: () => setShowCountrySheet(false)
+  }));
+}
+function CountrySheet({
+  current,
+  onPick,
+  onClose
+}) {
+  const countries = [{
+    flag: '🇵🇱',
+    code: '+48',
+    name: 'Polska'
+  }, {
+    flag: '🇩🇪',
+    code: '+49',
+    name: 'Niemcy'
+  }, {
+    flag: '🇬🇧',
+    code: '+44',
+    name: 'Wielka Brytania'
+  }, {
+    flag: '🇺🇸',
+    code: '+1',
+    name: 'USA'
+  }, {
+    flag: '🇫🇷',
+    code: '+33',
+    name: 'Francja'
+  }, {
+    flag: '🇪🇸',
+    code: '+34',
+    name: 'Hiszpania'
+  }, {
+    flag: '🇮🇹',
+    code: '+39',
+    name: 'Włochy'
+  }, {
+    flag: '🇺🇦',
+    code: '+380',
+    name: 'Ukraina'
+  }];
+  return /*#__PURE__*/React.createElement("div", {
+    onClick: onClose,
+    style: {
+      position: 'absolute',
+      inset: 0,
+      zIndex: 50,
+      background: 'rgba(26,20,17,0.4)',
+      backdropFilter: 'blur(8px)',
+      WebkitBackdropFilter: 'blur(8px)',
+      display: 'flex',
+      alignItems: 'flex-end',
+      animation: 'fadeIn 0.25s ease-out'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    onClick: e => e.stopPropagation(),
+    className: "glass",
+    style: {
+      width: '100%',
+      background: 'rgba(255,255,255,0.85)',
+      borderRadius: '28px 28px 0 0',
+      padding: '12px 0 34px',
+      animation: 'slideUp 0.3s ease-out'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 40,
+      height: 5,
+      borderRadius: 100,
+      background: 'rgba(26,20,17,0.2)',
+      margin: '0 auto 14px'
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 17,
+      fontWeight: 600,
+      textAlign: 'center',
+      marginBottom: 12,
+      color: 'var(--text)',
+      letterSpacing: '-0.01em'
+    }
+  }, "Wybierz kraj"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      maxHeight: 360,
+      overflow: 'auto'
+    }
+  }, countries.map(c => {
+    const sel = c.code === current.code;
+    return /*#__PURE__*/React.createElement("div", {
+      key: c.code,
+      onClick: () => onPick(c),
+      className: "press",
+      style: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: 14,
+        padding: '14px 24px',
+        cursor: 'pointer',
+        background: sel ? 'rgba(255,94,58,0.08)' : 'transparent'
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 26
+      }
+    }, c.flag), /*#__PURE__*/React.createElement("span", {
+      style: {
+        flex: 1,
+        fontSize: 16,
+        color: 'var(--text)',
+        letterSpacing: '-0.01em'
+      }
+    }, c.name), /*#__PURE__*/React.createElement("span", {
+      className: "num",
+      style: {
+        fontSize: 16,
+        color: 'var(--muted)'
+      }
+    }, c.code), sel && /*#__PURE__*/React.createElement("svg", {
+      width: "18",
+      height: "14",
+      viewBox: "0 0 18 14"
+    }, /*#__PURE__*/React.createElement("path", {
+      d: "M1 7l5 5 10-11",
+      stroke: "var(--accent)",
+      strokeWidth: "2.4",
+      fill: "none",
+      strokeLinecap: "round",
+      strokeLinejoin: "round"
+    })));
+  }))));
+}
+Object.assign(window, {
+  PhoneScreen
+});
+
+// ===== components/OtpScreen.jsx =====
+// OTP screen — 6 digits, auto-advance, shake on wrong, haptic viz
+// Correct code for demo: 123456
+function OtpScreen({
+  phone,
+  onSuccess,
+  onBack
+}) {
+  const [digits, setDigits] = React.useState(['', '', '', '', '', '']);
+  const [error, setError] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [resendLeft, setResendLeft] = React.useState(42);
+  const [hapticKey, setHapticKey] = React.useState(0);
+  React.useEffect(() => {
+    if (resendLeft <= 0) return;
+    const t = setTimeout(() => setResendLeft(n => n - 1), 1000);
+    return () => clearTimeout(t);
+  }, [resendLeft]);
+  const full = digits.join('');
+  const firstEmpty = digits.findIndex(d => d === '');
+  const activeIdx = firstEmpty === -1 ? 5 : firstEmpty;
+  const addDigit = d => {
+    if (loading) return;
+    setError(false);
+    setDigits(arr => {
+      const copy = [...arr];
+      const idx = copy.findIndex(x => x === '');
+      if (idx === -1) return copy;
+      copy[idx] = d;
+      return copy;
+    });
+    setHapticKey(k => k + 1);
+  };
+  const del = () => {
+    if (loading) return;
+    setError(false);
+    setDigits(arr => {
+      const copy = [...arr];
+      const lastFilled = [...copy].reverse().findIndex(x => x !== '');
+      if (lastFilled === -1) return copy;
+      copy[5 - lastFilled] = '';
+      return copy;
+    });
+  };
+
+  // Submit when full
+  React.useEffect(() => {
+    if (full.length !== 6 || loading) return;
+    setLoading(true);
+    setTimeout(() => {
+      if (full === '123456') {
+        onSuccess && onSuccess();
+      } else {
+        setError(true);
+        setLoading(false);
+        setTimeout(() => setDigits(['', '', '', '', '', '']), 500);
+      }
+    }, 700);
+  }, [full]);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "scene-enter",
+    style: {
+      position: 'absolute',
+      inset: 0,
+      zIndex: 2,
+      display: 'flex',
+      flexDirection: 'column',
+      paddingTop: 72
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '8px 16px 0'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "press",
+    onClick: onBack,
+    style: {
+      width: 44,
+      height: 44,
+      borderRadius: 100,
+      background: 'rgba(255,255,255,0.6)',
+      backdropFilter: 'blur(20px) saturate(180%)',
+      WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+      border: '0.5px solid rgba(255,255,255,0.7)',
+      boxShadow: 'inset 1px 1px 0 rgba(255,255,255,0.7), 0 1px 3px rgba(138,67,30,0.06)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      cursor: 'pointer'
+    }
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "11",
+    height: "18",
+    viewBox: "0 0 11 18"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M9 1L1 9l8 8",
+    stroke: "var(--text)",
+    strokeWidth: "2.4",
+    fill: "none",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  })))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '28px 24px 8px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 34,
+      fontWeight: 700,
+      letterSpacing: '-0.03em',
+      lineHeight: 1.08,
+      color: 'var(--text)'
+    }
+  }, "Sprawdzamy,", /*#__PURE__*/React.createElement("br", null), "czy to Ty ", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--accent)'
+    }
+  }, "\uD83D\uDD11")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 10,
+      fontSize: 15,
+      lineHeight: 1.4,
+      color: 'var(--muted)',
+      fontWeight: 400,
+      letterSpacing: '-0.01em',
+      textWrap: 'pretty'
+    }
+  }, "Wys\u0142ali\u015Bmy kod na ", /*#__PURE__*/React.createElement("span", {
+    className: "num",
+    style: {
+      color: 'var(--text)',
+      fontWeight: 600
+    }
+  }, phone))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '20px 20px 0',
+      animation: 'slideUp 0.5s 0.3s both'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "glass",
+    style: {
+      borderRadius: 14,
+      padding: '10px 14px',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 10,
+      background: 'rgba(255,255,255,0.55)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 24,
+      height: 24,
+      borderRadius: '50%',
+      background: 'var(--accent)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexShrink: 0
+    }
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "12",
+    height: "12",
+    viewBox: "0 0 12 12"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M2 3h8v6H3l-1 1V3z",
+    fill: "#fff"
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      fontSize: 13,
+      color: 'var(--text)',
+      letterSpacing: '-0.01em'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 600
+    }
+  }, "Oczekujemy SMS-a..."), /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: 'var(--muted)',
+      fontSize: 12
+    }
+  }, "Wpiszemy kod automatycznie")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 14,
+      height: 14,
+      borderRadius: '50%',
+      border: '2px solid var(--accent)',
+      borderTopColor: 'transparent',
+      animation: 'spin 1s linear infinite'
+    }
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: error ? 'shake' : '',
+    style: {
+      padding: '36px 20px 8px',
+      display: 'flex',
+      justifyContent: 'space-between',
+      gap: 8
+    }
+  }, digits.map((d, i) => {
+    const active = i === activeIdx && !loading && !error;
+    const filled = d !== '';
+    return /*#__PURE__*/React.createElement("div", {
+      key: i,
+      style: {
+        flex: 1,
+        aspectRatio: '0.78',
+        borderRadius: 16,
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: filled ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.45)',
+        backdropFilter: 'blur(20px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+        border: error ? '1.5px solid #E8441E' : active ? '1.5px solid var(--accent)' : '0.5px solid rgba(255,255,255,0.7)',
+        boxShadow: filled ? '0 2px 8px rgba(138,67,30,0.08), inset 1px 1px 0 rgba(255,255,255,0.8)' : active ? '0 0 0 4px rgba(255,94,58,0.12), inset 1px 1px 0 rgba(255,255,255,0.8)' : 'inset 1px 1px 0 rgba(255,255,255,0.7), inset -1px -1px 0 rgba(255,255,255,0.25)',
+        transition: 'all 0.2s'
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "num",
+      style: {
+        fontSize: 32,
+        fontWeight: 500,
+        color: 'var(--text)',
+        letterSpacing: '-0.02em',
+        animation: filled ? 'scaleIn 0.2s ease-out' : 'none'
+      }
+    }, d), active && !filled && /*#__PURE__*/React.createElement("div", {
+      style: {
+        width: 2,
+        height: 28,
+        background: 'var(--accent)',
+        animation: 'fadeIn 0.5s ease-in-out infinite alternate'
+      }
+    }));
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: 'center',
+      height: 22,
+      fontSize: 13,
+      color: error ? '#E8441E' : 'var(--muted)',
+      letterSpacing: '-0.01em',
+      marginTop: 12,
+      fontWeight: error ? 600 : 400
+    }
+  }, error ? 'Kod nieprawidłowy — spróbuj ponownie' : loading ? 'Weryfikujemy...' : ''), /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: 'center',
+      marginTop: 8,
+      fontSize: 14,
+      color: 'var(--muted)',
+      letterSpacing: '-0.01em'
+    }
+  }, resendLeft > 0 ? /*#__PURE__*/React.createElement(React.Fragment, null, "Nie dotar\u0142? Wy\u015Blij ponownie za ", /*#__PURE__*/React.createElement("span", {
+    className: "num",
+    style: {
+      color: 'var(--text)',
+      fontWeight: 600
+    }
+  }, "0:", String(resendLeft).padStart(2, '0'))) : /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--accent)',
+      fontWeight: 600,
+      cursor: 'pointer'
+    },
+    onClick: () => setResendLeft(42)
+  }, "Wy\u015Blij kod ponownie")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    key: hapticKey,
+    style: {
+      position: 'absolute',
+      bottom: 380,
+      left: '50%',
+      transform: 'translateX(-50%)',
+      width: 100,
+      height: 4,
+      borderRadius: 2,
+      background: 'var(--accent)',
+      opacity: hapticKey ? 0 : 0,
+      animation: hapticKey ? 'fadeOut 0.3s ease-out' : 'none',
+      pointerEvents: 'none'
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '0 20px 12px',
+      textAlign: 'center',
+      fontSize: 11,
+      color: 'var(--muted)',
+      letterSpacing: '-0.01em'
+    }
+  }, "\uD83D\uDCA1 Demo: u\u017Cyj kodu ", /*#__PURE__*/React.createElement("span", {
+    className: "num",
+    style: {
+      fontWeight: 700,
+      color: 'var(--text)'
+    }
+  }, "123456")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      paddingBottom: 40
+    }
+  }, /*#__PURE__*/React.createElement(NumericKeypad, {
+    onPress: addDigit,
+    onDelete: del,
+    disabled: loading
+  })));
+}
+Object.assign(window, {
+  OtpScreen
+});
+
+// ===== components/LoadingScreen.jsx =====
+// Loading screen — success check → transition to dashboard
+function LoadingScreen({
+  onDone
+}) {
+  const [stage, setStage] = React.useState('verify'); // verify → success
+
+  React.useEffect(() => {
+    const t1 = setTimeout(() => setStage('success'), 800);
+    const t2 = setTimeout(() => onDone && onDone(), 1800);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, []);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "scene-enter",
+    style: {
+      position: 'absolute',
+      inset: 0,
+      zIndex: 2,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 24
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 96,
+      height: 96,
+      borderRadius: '50%',
+      position: 'relative',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }
+  }, stage === 'verify' ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      inset: 0,
+      borderRadius: '50%',
+      border: '3px solid rgba(255,94,58,0.2)'
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      inset: 0,
+      borderRadius: '50%',
+      border: '3px solid var(--accent)',
+      borderRightColor: 'transparent',
+      borderBottomColor: 'transparent',
+      animation: 'spin 0.9s linear infinite'
+    }
+  })) : /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 96,
+      height: 96,
+      borderRadius: '50%',
+      background: 'linear-gradient(180deg, #FF7A55 0%, #FF4A1E 100%)',
+      boxShadow: '0 12px 32px rgba(255,74,30,0.35)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      animation: 'scaleIn 0.4s cubic-bezier(.3, 1.4, .5, 1)'
+    }
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "42",
+    height: "32",
+    viewBox: "0 0 42 32"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M3 16l11 11L39 3",
+    stroke: "#fff",
+    strokeWidth: "5",
+    fill: "none",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    style: {
+      strokeDasharray: 60,
+      strokeDashoffset: 60,
+      animation: 'check 0.5s 0.1s forwards'
+    }
+  })), /*#__PURE__*/React.createElement("style", null, `@keyframes check { to { stroke-dashoffset: 0; } }`))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 22,
+      fontWeight: 700,
+      color: 'var(--text)',
+      letterSpacing: '-0.02em',
+      textAlign: 'center',
+      animation: 'fadeIn 0.3s ease-out'
+    },
+    key: stage
+  }, stage === 'verify' ? 'Szykujemy Twoje miejsce...' : 'Cześć, jesteś w Heree 👋'));
+}
+Object.assign(window, {
+  LoadingScreen
+});
+
+// ===== components/Dashboard.jsx =====
+// Dashboard — map + bottom sheet with events + people
+function Dashboard() {
+  const [sheetExpanded, setSheetExpanded] = React.useState(false);
+
+  // People pins (relative to map viewport)
+  const people = [{
+    id: 1,
+    x: 32,
+    y: 26,
+    label: 'Ola',
+    avatar: '#FFC98A',
+    tag: '2 min'
+  }, {
+    id: 2,
+    x: 58,
+    y: 34,
+    label: 'Marek',
+    avatar: '#FFA078',
+    tag: '5 min'
+  }, {
+    id: 3,
+    x: 45,
+    y: 52,
+    label: 'Ania',
+    avatar: '#FFB8AA',
+    tag: '8 min'
+  }, {
+    id: 4,
+    x: 72,
+    y: 62,
+    label: 'Kuba',
+    avatar: '#FFD6B0',
+    tag: '12 min'
+  }, {
+    id: 5,
+    x: 22,
+    y: 58,
+    label: 'Zosia',
+    avatar: '#F9B48A',
+    tag: '3 min'
+  }];
+  const events = [{
+    id: 1,
+    emoji: '☕',
+    title: 'Kawa w Cafe Relax',
+    when: 'Dziś · 17:00',
+    who: 4,
+    dist: '350 m',
+    color: '#FFE3CF'
+  }, {
+    id: 2,
+    emoji: '🏃',
+    title: 'Poranny bieg w parku',
+    when: 'Jutro · 7:00',
+    who: 12,
+    dist: '1.2 km',
+    color: '#FFD4B8'
+  }, {
+    id: 3,
+    emoji: '🎸',
+    title: 'Open mic night',
+    when: 'Piątek · 20:00',
+    who: 28,
+    dist: '2.4 km',
+    color: '#FFC7A0'
+  }, {
+    id: 4,
+    emoji: '🎲',
+    title: 'Planszówki u Piotrka',
+    when: 'Sobota · 19:00',
+    who: 6,
+    dist: '600 m',
+    color: '#FFE9D9'
+  }];
+  return /*#__PURE__*/React.createElement("div", {
+    className: "scene-enter",
+    style: {
+      position: 'absolute',
+      inset: 0,
+      zIndex: 2,
+      display: 'flex',
+      flexDirection: 'column'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      inset: 0,
+      overflow: 'hidden',
+      background: `
+          radial-gradient(600px 500px at 40% 30%, #f8ede0 0%, transparent 70%),
+          linear-gradient(180deg, #EFE7DB 0%, #E8DFD1 100%)
+        `
+    }
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "100%",
+    height: "100%",
+    style: {
+      position: 'absolute',
+      inset: 0
+    },
+    preserveAspectRatio: "none"
+  }, /*#__PURE__*/React.createElement("defs", null, /*#__PURE__*/React.createElement("pattern", {
+    id: "grid",
+    width: "80",
+    height: "80",
+    patternUnits: "userSpaceOnUse"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M80 0H0V80",
+    fill: "none",
+    stroke: "rgba(0,0,0,0.04)",
+    strokeWidth: "1"
+  }))), /*#__PURE__*/React.createElement("rect", {
+    width: "100%",
+    height: "100%",
+    fill: "url(#grid)"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M-20 180 Q 100 160, 220 200 T 440 220",
+    stroke: "#fff",
+    strokeWidth: "18",
+    fill: "none",
+    opacity: "0.9"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M-20 180 Q 100 160, 220 200 T 440 220",
+    stroke: "#F4E4D0",
+    strokeWidth: "14",
+    fill: "none"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M120 0 Q 140 150, 180 280 T 220 560",
+    stroke: "#fff",
+    strokeWidth: "14",
+    fill: "none",
+    opacity: "0.9"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M120 0 Q 140 150, 180 280 T 220 560",
+    stroke: "#F4E4D0",
+    strokeWidth: "10",
+    fill: "none"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M320 40 Q 300 200, 340 360 T 380 640",
+    stroke: "#fff",
+    strokeWidth: "14",
+    fill: "none",
+    opacity: "0.9"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M320 40 Q 300 200, 340 360 T 380 640",
+    stroke: "#F4E4D0",
+    strokeWidth: "10",
+    fill: "none"
+  }), /*#__PURE__*/React.createElement("ellipse", {
+    cx: "90",
+    cy: "420",
+    rx: "100",
+    ry: "70",
+    fill: "#D6E4C8",
+    opacity: "0.6"
+  }), /*#__PURE__*/React.createElement("ellipse", {
+    cx: "90",
+    cy: "420",
+    rx: "80",
+    ry: "52",
+    fill: "#CCDDBD",
+    opacity: "0.5"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M260 560 Q 340 520, 420 540 L 420 700 L 260 700 Z",
+    fill: "#C9DEE8",
+    opacity: "0.7"
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      left: '50%',
+      top: '42%',
+      transform: 'translate(-50%, -50%)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      width: 80,
+      height: 80,
+      borderRadius: '50%',
+      background: 'rgba(52,120,246,0.15)',
+      top: -40,
+      left: -40,
+      animation: 'pinPulse 2.5s ease-out infinite'
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 20,
+      height: 20,
+      borderRadius: '50%',
+      background: '#3478F6',
+      border: '3px solid #fff',
+      boxShadow: '0 2px 8px rgba(52,120,246,0.4)'
+    }
+  })), people.map(p => /*#__PURE__*/React.createElement("div", {
+    key: p.id,
+    style: {
+      position: 'absolute',
+      left: `${p.x}%`,
+      top: `${p.y}%`,
+      transform: 'translate(-50%, -100%)',
+      animation: `slideUp 0.5s ${p.id * 0.08}s both`
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 44,
+      height: 44,
+      borderRadius: '50% 50% 50% 4px',
+      transform: 'rotate(-45deg)',
+      background: `linear-gradient(135deg, ${p.avatar} 0%, #FF7A45 100%)`,
+      border: '2.5px solid #fff',
+      boxShadow: '0 4px 12px rgba(138,67,30,0.25)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      transform: 'rotate(45deg)',
+      width: 30,
+      height: 30,
+      borderRadius: '50%',
+      background: p.avatar,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: 13,
+      fontWeight: 700,
+      color: '#fff',
+      letterSpacing: '-0.01em'
+    }
+  }, p.label[0]))))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'relative',
+      zIndex: 3,
+      padding: '60px 16px 0',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      height: 44,
+      borderRadius: 100,
+      background: 'rgba(255,255,255,0.7)',
+      backdropFilter: 'blur(24px) saturate(180%)',
+      WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+      border: '0.5px solid rgba(255,255,255,0.8)',
+      boxShadow: 'inset 1px 1px 0 rgba(255,255,255,0.8), 0 4px 12px rgba(138,67,30,0.08)',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 10,
+      padding: '0 16px'
+    }
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "16",
+    height: "16",
+    viewBox: "0 0 16 16"
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "7",
+    cy: "7",
+    r: "5",
+    fill: "none",
+    stroke: "var(--muted)",
+    strokeWidth: "1.6"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M11 11l3.5 3.5",
+    stroke: "var(--muted)",
+    strokeWidth: "1.6",
+    strokeLinecap: "round"
+  })), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 15,
+      color: 'var(--muted)',
+      letterSpacing: '-0.01em'
+    }
+  }, "Znajd\u017A ludzi lub miejsca")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 44,
+      height: 44,
+      borderRadius: '50%',
+      background: 'linear-gradient(135deg, #FFC98A 0%, #FF7A45 100%)',
+      border: '2px solid #fff',
+      boxShadow: '0 4px 12px rgba(138,67,30,0.2)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: '#fff',
+      fontWeight: 700,
+      fontSize: 16,
+      letterSpacing: '-0.01em'
+    }
+  }, "K")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'relative',
+      zIndex: 3,
+      padding: '12px 16px 0',
+      display: 'flex',
+      gap: 8,
+      overflow: 'auto'
+    }
+  }, [{
+    icon: '👋',
+    label: 'Ludzie',
+    active: true
+  }, {
+    icon: '☕',
+    label: 'Kawka'
+  }, {
+    icon: '🎲',
+    label: 'Hobby'
+  }, {
+    icon: '🏃',
+    label: 'Sport'
+  }, {
+    icon: '🎵',
+    label: 'Muzyka'
+  }].map((c, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "press",
+    style: {
+      height: 36,
+      padding: '0 14px',
+      borderRadius: 100,
+      background: c.active ? 'var(--accent)' : 'rgba(255,255,255,0.7)',
+      backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
+      border: c.active ? 'none' : '0.5px solid rgba(255,255,255,0.8)',
+      boxShadow: c.active ? '0 4px 12px rgba(255,74,30,0.25)' : '0 2px 6px rgba(138,67,30,0.06)',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 6,
+      fontSize: 14,
+      fontWeight: 600,
+      letterSpacing: '-0.01em',
+      color: c.active ? '#fff' : 'var(--text)',
+      cursor: 'pointer',
+      whiteSpace: 'nowrap',
+      flexShrink: 0
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 14
+    }
+  }, c.icon), c.label))), /*#__PURE__*/React.createElement("div", {
+    onClick: () => setSheetExpanded(e => !e),
+    style: {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      bottom: 0,
+      height: sheetExpanded ? '62%' : '38%',
+      borderRadius: '28px 28px 0 0',
+      background: 'rgba(255,255,255,0.72)',
+      backdropFilter: 'blur(30px) saturate(180%)',
+      WebkitBackdropFilter: 'blur(30px) saturate(180%)',
+      border: '0.5px solid rgba(255,255,255,0.8)',
+      boxShadow: '0 -4px 24px rgba(138,67,30,0.1), inset 1px 1px 0 rgba(255,255,255,0.8)',
+      zIndex: 4,
+      transition: 'height 0.35s cubic-bezier(.3, 1, .3, 1)',
+      paddingBottom: 34,
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'hidden',
+      cursor: 'pointer'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 40,
+      height: 5,
+      borderRadius: 100,
+      background: 'rgba(26,20,17,0.2)',
+      margin: '10px auto 14px',
+      flexShrink: 0
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '0 20px 10px',
+      flexShrink: 0,
+      display: 'flex',
+      alignItems: 'baseline',
+      justifyContent: 'space-between'
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 22,
+      fontWeight: 700,
+      color: 'var(--text)',
+      letterSpacing: '-0.02em'
+    }
+  }, "W pobli\u017Cu"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 13,
+      color: 'var(--muted)',
+      marginTop: 2,
+      letterSpacing: '-0.01em'
+    }
+  }, "5 os\xF3b \xB7 4 wydarzenia w 1km")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 13,
+      fontWeight: 600,
+      color: 'var(--accent)',
+      letterSpacing: '-0.01em'
+    }
+  }, "Zobacz wszystko")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '10px 20px 14px',
+      display: 'flex',
+      gap: 12,
+      overflow: 'auto',
+      flexShrink: 0
+    },
+    onClick: e => e.stopPropagation()
+  }, people.map(p => /*#__PURE__*/React.createElement("div", {
+    key: p.id,
+    style: {
+      flexShrink: 0,
+      width: 72,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: 6
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'relative'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 60,
+      height: 60,
+      borderRadius: '50%',
+      background: `linear-gradient(135deg, ${p.avatar} 0%, #FF7A45 100%)`,
+      border: '2px solid #fff',
+      boxShadow: '0 3px 10px rgba(138,67,30,0.18)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: '#fff',
+      fontWeight: 700,
+      fontSize: 22,
+      letterSpacing: '-0.01em'
+    }
+  }, p.label[0]), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
+      width: 14,
+      height: 14,
+      borderRadius: '50%',
+      background: '#33C759',
+      border: '2px solid #fff'
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      fontWeight: 600,
+      color: 'var(--text)',
+      letterSpacing: '-0.01em'
+    }
+  }, p.label), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: 'var(--muted)'
+    }
+  }, p.tag)))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      overflow: 'auto',
+      padding: '4px 16px 0'
+    },
+    onClick: e => e.stopPropagation()
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      fontWeight: 700,
+      color: 'var(--muted)',
+      letterSpacing: '0.08em',
+      textTransform: 'uppercase',
+      padding: '4px 4px 10px'
+    }
+  }, "Wydarzenia"), events.map(ev => /*#__PURE__*/React.createElement("div", {
+    key: ev.id,
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 14,
+      padding: '12px 8px',
+      borderRadius: 16,
+      marginBottom: 4
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 48,
+      height: 48,
+      borderRadius: 14,
+      background: ev.color,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: 24,
+      flexShrink: 0
+    }
+  }, ev.emoji), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      minWidth: 0
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 15,
+      fontWeight: 600,
+      color: 'var(--text)',
+      letterSpacing: '-0.01em',
+      marginBottom: 2,
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis'
+    }
+  }, ev.title), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: 'var(--muted)',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement("span", null, ev.when), /*#__PURE__*/React.createElement("span", {
+    style: {
+      width: 2,
+      height: 2,
+      borderRadius: '50%',
+      background: 'var(--muted)'
+    }
+  }), /*#__PURE__*/React.createElement("span", null, ev.who, " os\xF3b"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      width: 2,
+      height: 2,
+      borderRadius: '50%',
+      background: 'var(--muted)'
+    }
+  }), /*#__PURE__*/React.createElement("span", null, ev.dist))), /*#__PURE__*/React.createElement("div", {
+    className: "press",
+    style: {
+      height: 32,
+      padding: '0 14px',
+      borderRadius: 100,
+      background: 'rgba(255,94,58,0.1)',
+      color: 'var(--accent)',
+      fontSize: 13,
+      fontWeight: 600,
+      display: 'flex',
+      alignItems: 'center',
+      letterSpacing: '-0.01em',
+      cursor: 'pointer'
+    }
+  }, "Do\u0142\u0105cz"))))), !sheetExpanded && /*#__PURE__*/React.createElement("div", {
+    className: "press",
+    style: {
+      position: 'absolute',
+      right: 16,
+      bottom: '40%',
+      transform: 'translateY(-12px)',
+      zIndex: 5,
+      width: 56,
+      height: 56,
+      borderRadius: '50%',
+      background: 'linear-gradient(180deg, #FF7A55 0%, #FF4A1E 100%)',
+      boxShadow: '0 8px 20px rgba(255,74,30,0.35), inset 0 1px 0 rgba(255,255,255,0.3)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      cursor: 'pointer'
+    }
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "24",
+    height: "24",
+    viewBox: "0 0 24 24"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M12 2 C16 2 19 5 19 9 C19 13 14 20 12 22 C10 20 5 13 5 9 C5 5 8 2 12 2 Z",
+    fill: "#fff"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "9",
+    r: "3",
+    fill: "var(--accent)"
+  }))));
+}
+Object.assign(window, {
+  Dashboard
+});
+</script>
+
+  <script type="text/babel">
+    const TWEAKS = /*EDITMODE-BEGIN*/{
+      "accent": "#FF4A1E",
+      "ambient": "warm",
+      "splashRings": true
+    }/*EDITMODE-END*/;
+
+    const SCENES = ['splash', 'phone', 'otp', 'loading', 'dashboard'];
+    const SCENE_LABELS = {
+      splash: '01 Splash',
+      phone: '02 Numer telefonu',
+      otp: '03 OTP',
+      loading: '04 Weryfikacja',
+      dashboard: '05 Dashboard',
+    };
+
+    const ACCENTS = {
+      '#FF4A1E': { light: '#FF8A65', deep: '#E8441E' },
+      '#7C5CFF': { light: '#A590FF', deep: '#5A3DE0' },
+      '#00C2A8': { light: '#4DDFC9', deep: '#00957F' },
+      '#FF5E8A': { light: '#FFA3BD', deep: '#E84870' },
+    };
+
+    const AMBIENTS = {
+      warm: ['#FFB38A', '#FF7A45', '#FFD7A8', '#FF9466'],
+      cool: ['#A8C8FF', '#5A8AFF', '#C5D9FF', '#7AA3FF'],
+      violet: ['#D4A8FF', '#9B5AFF', '#E5C9FF', '#B67AFF'],
+      night: ['#3A3049', '#1a1220', '#4a3855', '#2a1d30'],
+    };
+
+    function App() {
+      const savedScene = localStorage.getItem('heree.scene') || 'splash';
+      const [scene, setScene] = React.useState(savedScene);
+      const [phone, setPhone] = React.useState('');
+      const [tweaks, setTweaks] = React.useState(TWEAKS);
+      const [tweaksOpen, setTweaksOpen] = React.useState(false);
+      const [editModeActive, setEditModeActive] = React.useState(false);
+
+      React.useEffect(() => { localStorage.setItem('heree.scene', scene); }, [scene]);
+
+      // Apply tweaks to CSS vars
+      React.useEffect(() => {
+        const a = tweaks.accent || '#FF4A1E';
+        const palette = ACCENTS[a] || ACCENTS['#FF4A1E'];
+        document.documentElement.style.setProperty('--accent', a);
+        document.documentElement.style.setProperty('--accent-light', palette.light);
+        document.documentElement.style.setProperty('--accent-deep', palette.deep);
+      }, [tweaks.accent]);
+
+      // Host edit-mode protocol
+      React.useEffect(() => {
+        const handler = (e) => {
+          if (e.data?.type === '__activate_edit_mode') setEditModeActive(true);
+          if (e.data?.type === '__deactivate_edit_mode') { setEditModeActive(false); setTweaksOpen(false); }
+        };
+        window.addEventListener('message', handler);
+        window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+        return () => window.removeEventListener('message', handler);
+      }, []);
+
+      const updateTweak = (k, v) => {
+        setTweaks(t => {
+          const next = { ...t, [k]: v };
+          window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { [k]: v } }, '*');
+          return next;
+        });
+      };
+
+      const go = (s) => setScene(s);
+      const curIdx = SCENES.indexOf(scene);
+
+      const amb = AMBIENTS[tweaks.ambient] || AMBIENTS.warm;
+
+      const renderScene = () => {
+        switch (scene) {
+          case 'splash':
+            return <SplashScreen onDone={() => go('phone')} />;
+          case 'phone':
+            return <PhoneScreen
+              onContinue={(p) => { setPhone(p); go('otp'); }}
+              onDemo={() => go('dashboard')}
+            />;
+          case 'otp':
+            return <OtpScreen
+              phone={phone || '+48 600 000 000'}
+              onSuccess={() => go('loading')}
+              onBack={() => go('phone')}
+            />;
+          case 'loading':
+            return <LoadingScreen onDone={() => go('dashboard')} />;
+          case 'dashboard':
+            return <Dashboard />;
+          default:
+            return null;
+        }
+      };
+
+      // Ambient gradient as inline styles so tweaks work
+      const ambientStyle = {
+        position: 'absolute', inset: 0, overflow: 'hidden', zIndex: 0,
+      };
+
+      return (
+        <div className="stage">
+          {/* Chrome */}
+          <div className="stage-chrome" data-screen-label={SCENE_LABELS[scene]}>
+            {SCENES.map((s, i) => (
+              <div key={s}
+                   onClick={() => go(s)}
+                   className={`step-dot ${i === curIdx ? 'active' : i < curIdx ? 'done' : ''}`}
+                   style={{ cursor: 'pointer' }}
+                   title={SCENE_LABELS[s]}
+              />
+            ))}
+            <span style={{ marginLeft: 12 }}>{SCENE_LABELS[scene]}</span>
+          </div>
+
+          {/* Device */}
+          <IOSDevice width={390} height={844}>
+            <div className="app" style={{
+              position: 'absolute', inset: 0, overflow: 'hidden',
+              background: scene === 'dashboard' ? '#EFE7DB' : `
+                radial-gradient(900px 700px at 10% -10%, ${amb[0]}80 0%, transparent 55%),
+                radial-gradient(800px 600px at 110% 110%, ${amb[2]}70 0%, transparent 55%),
+                #F5EEE4
+              `,
+            }}>
+              {/* Ambient blobs (only on non-dashboard scenes) */}
+              {scene !== 'dashboard' && (
+                <div style={ambientStyle}>
+                  <div style={{
+                    position: 'absolute', width: 420, height: 420, borderRadius: '50%',
+                    filter: 'blur(70px)', opacity: 0.75,
+                    background: `radial-gradient(circle, ${amb[0]} 0%, ${amb[1]} 55%, transparent 70%)`,
+                    top: -120, left: -80,
+                    animation: 'blobA 18s ease-in-out infinite',
+                  }} />
+                  <div style={{
+                    position: 'absolute', width: 380, height: 380, borderRadius: '50%',
+                    filter: 'blur(70px)', opacity: 0.75,
+                    background: `radial-gradient(circle, ${amb[2]} 0%, ${amb[3]} 60%, transparent 75%)`,
+                    bottom: -140, right: -100,
+                    animation: 'blobB 22s ease-in-out infinite',
+                  }} />
+                </div>
+              )}
+              <style>{`
+                @keyframes blobA {
+                  0%, 100% { transform: translate(0, 0) scale(1); }
+                  50% { transform: translate(40px, 60px) scale(1.1); }
+                }
+                @keyframes blobB {
+                  0%, 100% { transform: translate(0, 0) scale(1); }
+                  50% { transform: translate(-30px, -40px) scale(1.08); }
+                }
+              `}</style>
+
+              {renderScene()}
+            </div>
+          </IOSDevice>
+
+          {/* Nav helpers */}
+          <div style={{ display: 'flex', gap: 8, marginTop: 2 }}>
+            <div className="chip-nav" onClick={() => go(SCENES[Math.max(0, curIdx - 1)])}>← Wstecz</div>
+            <div className="chip-nav" onClick={() => go('splash')}>⟲ Restart</div>
+            <div className="chip-nav" onClick={() => go(SCENES[Math.min(SCENES.length - 1, curIdx + 1)])}>Dalej →</div>
+          </div>
+
+          {/* Tweaks panel */}
+          {editModeActive && (
+            <div style={{
+              position: 'fixed', right: 20, bottom: 20, zIndex: 100,
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 10,
+            }}>
+              <div className={`tweaks ${tweaksOpen ? 'open' : ''}`}>
+                <h3>Tweaks</h3>
+
+                <label>Kolor akcentu</label>
+                <div className="tweak-group">
+                  {Object.keys(ACCENTS).map(c => (
+                    <div key={c}
+                         className={`tweak-color ${tweaks.accent === c ? 'sel' : ''}`}
+                         style={{ background: c }}
+                         onClick={() => updateTweak('accent', c)}
+                    />
+                  ))}
+                </div>
+
+                <label>Ambient</label>
+                <div className="tweak-group">
+                  {['warm', 'cool', 'violet', 'night'].map(a => (
+                    <div key={a}
+                         className={`tweak-btn ${tweaks.ambient === a ? 'sel' : ''}`}
+                         onClick={() => updateTweak('ambient', a)}
+                    >{a}</div>
+                  ))}
+                </div>
+
+                <label>Ekran</label>
+                <div className="tweak-group">
+                  {SCENES.map(s => (
+                    <div key={s}
+                         className={`tweak-btn ${scene === s ? 'sel' : ''}`}
+                         onClick={() => go(s)}
+                    >{SCENE_LABELS[s].slice(3)}</div>
+                  ))}
+                </div>
+              </div>
+
+              <div
+                onClick={() => setTweaksOpen(o => !o)}
+                style={{
+                  width: 48, height: 48, borderRadius: '50%',
+                  background: 'linear-gradient(180deg, #FF7A55 0%, #FF4A1E 100%)',
+                  boxShadow: '0 6px 16px rgba(255,74,30,0.35)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  cursor: 'pointer', color: '#fff', fontSize: 20,
+                }}
+              >
+                {tweaksOpen ? '×' : '⚙'}
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    function mountWhenReady() {
+      if (typeof IOSDevice === 'undefined' ||
+          typeof SplashScreen === 'undefined' ||
+          typeof PhoneScreen === 'undefined' ||
+          typeof OtpScreen === 'undefined' ||
+          typeof LoadingScreen === 'undefined' ||
+          typeof Dashboard === 'undefined' ||
+          typeof HereePin === 'undefined' ||
+          typeof NumericKeypad === 'undefined') {
+        return setTimeout(mountWhenReady, 30);
+      }
+      ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    }
+    mountWhenReady();
+  </script>
+</body>
+</html>

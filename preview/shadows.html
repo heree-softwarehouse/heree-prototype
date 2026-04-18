@@ -1,0 +1,40 @@
+<!doctype html><html><head><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Instrument+Serif:ital,wght@0,400;1,400&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"><link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  html,body{margin:0;background:
+    radial-gradient(500px 340px at 20% -10%, rgba(28,39,64,0.55), transparent 55%),
+    radial-gradient(400px 300px at 110% 110%, rgba(255,122,69,0.10), transparent 55%),
+    #0B1220;color:#F5F7FA;font-family:var(--font-sans);height:100%}
+  .wrap{padding:20px 24px;display:flex;flex-direction:column;gap:10px}
+  .row{display:grid;grid-template-columns:90px 1fr auto;align-items:center;gap:14px;padding:4px 0}
+  .swatch{width:84px;height:44px;border-radius:14px}
+  .lbl{font-family:var(--font-mono);font-size:9px;color:#B8C2D0;letter-spacing:0.14em;text-transform:uppercase}
+  .lbl .sub{display:block;color:#7A8499;font-size:8.5px;margin-top:2px;letter-spacing:0.12em}
+  .code{font-family:var(--font-mono);font-size:10px;color:#7A8499}
+
+  /* shadow recipes — no gradient backgrounds */
+  .s-glass{background:rgba(184,194,208,0.06);border:0.5px solid rgba(184,194,208,0.28);box-shadow:inset 0 1px 0 rgba(255,255,255,0.06), 0 6px 24px rgba(0,0,0,0.35)}
+  .s-cta{background:#FF7A45;box-shadow:inset 0 1px 0 rgba(255,255,255,0.22), 0 8px 20px -6px rgba(255,122,69,0.5)}
+  .s-sheet{background:#2A0D16;border-top:0.5px solid rgba(184,194,208,0.14);box-shadow:0 -20px 40px rgba(0,0,0,0.5)}
+  .s-disabled{background:transparent;border:0.5px solid rgba(184,194,208,0.28);color:#7A8499;display:flex;align-items:center;justify-content:center;font-size:11px;font-family:var(--font-sans)}
+</style></head><body><div class="wrap">
+  <div class="row">
+    <div class="swatch s-glass"></div>
+    <div class="lbl">glass resting<span class="sub">cards · inputs · chips</span></div>
+    <div class="code">inset 0 1 0 rgba(255,255,255,.06) · 0 6 24 rgba(0,0,0,.35)</div>
+  </div>
+  <div class="row">
+    <div class="swatch s-cta"></div>
+    <div class="lbl">cta · flat coral<span class="sub">solid #FF7A45 + subtle top-gloss</span></div>
+    <div class="code">inset 0 1 0 rgba(255,255,255,.22) · 0 8 20 -6 rgba(255,122,69,.5)</div>
+  </div>
+  <div class="row">
+    <div class="swatch s-disabled">Wyślij kod</div>
+    <div class="lbl">cta · disabled<span class="sub">hairline outline — not opacity</span></div>
+    <div class="code">border 0.5 rgba(184,194,208,.28) · text-faint</div>
+  </div>
+  <div class="row">
+    <div class="swatch s-sheet"></div>
+    <div class="lbl">sheet · cast-up<span class="sub">bottom-sheet on dashboard</span></div>
+    <div class="code">0 -20 40 rgba(0,0,0,.5)</div>
+  </div>
+</div></body></html>

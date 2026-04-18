@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Heree v2 — Prototyp</title>
+<title>Heree App Prototype</title>
 <style>
-/* Heree v2 — tokens (palette switched at runtime via data-palette on :root) */
+/* Heree App Prototype — tokens (palette switched at runtime via data-palette on :root) */
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
@@ -297,7 +297,7 @@ window.__HEREE_TWEAKS = { ...TWEAK_DEFAULTS };
 </script>
 
 <script type="text/babel">
-/* Heree v2 — shared primitives: icons, status bar, buttons, keypad, logo */
+/* Heree App Prototype — shared primitives: icons, status bar, buttons, keypad, logo */
 const { useState, useEffect, useMemo, useRef } = React;
 
 const Ic = {
@@ -394,7 +394,7 @@ Object.assign(window, { Ic, HereeWordmark, HereePin, StatusBar, Chip, Keypad });
 
 </script>
 <script type="text/babel">
-/* Heree v2 — scenes part A: Splash, Phone, Otp, Loading, Profile */
+/* Heree App Prototype — scenes part A: Splash, Phone, Otp, Loading, Profile */
 
 function Splash({ onDone }) {
   useEffect(()=>{ const t=setTimeout(onDone,1700); return()=>clearTimeout(t); },[]);
@@ -681,7 +681,7 @@ Object.assign(window, { Splash, Phone, Otp, Loading, Profile });
 
 </script>
 <script type="text/babel">
-/* Heree v2 — Dashboard with Swiping and Cruising modes */
+/* Heree App Prototype — Dashboard with Swiping and Cruising modes */
 
 const PEOPLE = [
   { id:1, name:'Kasia', age:29, dist:'140 m', hood:'Wierzbowa', bio:'Biegam rano po Polu Mokotowskim, 6:30. Szukam towarzystwa.', vibes:['bieganie','kawa','książki'], hue:12 },

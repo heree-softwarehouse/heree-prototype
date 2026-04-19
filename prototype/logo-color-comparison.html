@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Heree · iPhone Orange vs Burgundy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#0A0808;color:#F2F0EE;font-family:'Inter Tight',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.shell{max-width:1320px;margin:0 auto;padding:48px 40px 100px}
+.crumb{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#5B5550;margin-bottom:12px}
+h1{font-size:46px;letter-spacing:-0.03em;font-weight:700;margin:0 0 10px;line-height:1.02}
+.lede{font-size:15px;color:#8E8A86;max-width:72ch;line-height:1.6;margin-bottom:52px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:48px}
+.col{border-radius:22px;overflow:hidden;border:0.5px solid rgba(255,255,255,0.08)}
+.col-head{padding:32px 32px 28px;display:flex;align-items:center;gap:20px}
+.col-head .logo-wrap{flex-shrink:0}
+.col-head .info h2{font-size:26px;font-weight:700;letter-spacing:-0.03em;margin:0 0 4px}
+.col-head .info .sub{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;opacity:0.45}
+.col-body{padding:0 24px 24px;display:flex;flex-direction:column;gap:14px}
+.row-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;opacity:0.45;margin-bottom:4px}
+.swatch-row{display:flex;gap:8px;align-items:center}
+.swatch{width:36px;height:36px;border-radius:10px;border:0.5px solid rgba(255,255,255,0.1);flex-shrink:0}
+.swatch-info{font-size:12px;line-height:1.4}
+.swatch-info .hex{font-family:'JetBrains Mono',monospace;font-size:11px;opacity:0.7}
+.score-section{padding:18px 20px;border-radius:14px;background:rgba(255,255,255,0.04)}
+.score-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.score-row:last-child{margin-bottom:0}
+.score-lbl{font-size:12px;flex:1;opacity:0.85}
+.bar{flex:2;height:5px;border-radius:3px;background:rgba(255,255,255,0.08);overflow:hidden}
+.bar-fill{height:100%;border-radius:3px}
+.score-num{font-family:'JetBrains Mono',monospace;font-size:11px;opacity:0.55;width:30px;text-align:right}
+.verdict-box{padding:14px 18px;border-radius:12px;font-size:13px;line-height:1.55}
+.verdict-box strong{display:block;font-size:14px;margin-bottom:4px}
+/* UI previews */
+.ui-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ui-mock{border-radius:16px;overflow:hidden;height:280px;position:relative}
+.ui-mock-inner{position:absolute;inset:0;display:flex;flex-direction:column;padding:22px 18px}
+.ui-mock .eyebrow{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;opacity:0.45;margin-bottom:12px}
+.ui-mock .heading{font-size:28px;font-weight:700;letter-spacing:-0.03em;line-height:1.1;margin-bottom:10px}
+.ui-mock .body{font-size:12px;opacity:0.6;line-height:1.5;margin-bottom:'auto'}
+.btn-mock{height:44px;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;margin-top:auto;border:none;cursor:default}
+/* direct on dark comparison */
+.side-by-side{display:grid;grid-template-columns:1fr 1fr;gap:2px;border-radius:20px;overflow:hidden;margin-bottom:40px;border:0.5px solid rgba(255,255,255,0.08)}
+.sbs-cell{padding:28px;display:flex;flex-direction:column;align-items:center;gap:20px}
+.sbs-cell .label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;opacity:0.5}
+/* final rec */
+.rec{border-radius:22px;padding:36px;display:flex;gap:32px;align-items:center;border:0.5px solid rgba(255,255,255,0.12)}
+.rec .text h2{font-size:28px;font-weight:700;letter-spacing:-0.02em;margin:0 0 8px}
+.rec .text p{font-size:14px;line-height:1.6;opacity:0.7;margin:0;max-width:54ch}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="crumb">Heree · Color Decision · iPhone 17 Orange vs iPhone 18 Burgundy</div>
+  <h1>Wschód słońca<br/>czy koniec dnia?</h1>
+  <p class="lede">
+    Dwa kolory akcent — oba "Apple premium", oba ciepłe, zupełnie różne emocje.
+    Apertura na każdym z nich. Zdecyduj, która emocja lepiej opisuje chwilę, gdy otwierasz Heree.
+  </p>
+
+  <!-- Side by side raw -->
+  <div class="side-by-side">
+    <!-- iPhone 17 Orange -->
+    <div class="sbs-cell" style="background:linear-gradient(160deg,#2B1D08,#0F0B06)">
+      <div class="label">iPhone 17 — Desert Orange</div>
+      <svg viewBox="0 0 200 200" width="160" height="160" style="filter:drop-shadow(0 0 50px rgba(232,144,26,0.55))">
+        <defs>
+          <radialGradient id="a-bg" cx="28%" cy="28%" r="85%">
+            <stop offset="0" stop-color="#2B1D08"/>
+            <stop offset="100%" stop-color="#0F0B06"/>
+          </radialGradient>
+          <linearGradient id="a-ring" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FFD89B"/>
+            <stop offset="55%" stop-color="#E8901A"/>
+            <stop offset="100%" stop-color="#B86010"/>
+          </linearGradient>
+        </defs>
+        <rect width="200" height="200" rx="44" fill="url(#a-bg)"/>
+        <circle cx="100" cy="100" r="64" fill="none" stroke="url(#a-ring)" stroke-width="16" stroke-linecap="round" stroke-dasharray="290 78" transform="rotate(-60 100 100)"/>
+        <circle cx="100" cy="100" r="10" fill="#FFD89B"/>
+      </svg>
+      <div style="font-size:42px;font-weight:700;letter-spacing:-0.05em">heree<span style="color:#E8901A">.</span></div>
+      <div style="display:flex;gap:8px">
+        <div style="width:32px;height:32px;border-radius:8px;background:#FFD89B;border:0.5px solid rgba(255,255,255,0.1)"></div>
+        <div style="width:32px;height:32px;border-radius:8px;background:#E8901A"></div>
+        <div style="width:32px;height:32px;border-radius:8px;background:#B86010"></div>
+        <div style="width:32px;height:32px;border-radius:8px;background:#7A3A06"></div>
+        <div style="width:32px;height:32px;border-radius:8px;background:#2B1D08"></div>
+      </div>
+    </div>
+    <!-- iPhone 18 Burgundy -->
+    <div class="sbs-cell" style="background:linear-gradient(160deg,#2B0E18,#0F060A)">
+      <div class="label">iPhone 18 — Desert Burgundy</div>
+      <svg viewBox="0 0 200 200" width="160" height="160" style="filter:drop-shadow(0 0 50px rgba(172,48,82,0.55))">
+        <defs>
+          <radialGradient id="b-bg" cx="28%" cy="28%" r="85%">
+            <stop offset="0" stop-color="#2B0E18"/>
+            <stop offset="100%" stop-color="#0F060A"/>
+          </radialGradient>
+          <linearGradient id="b-ring" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FFADC7"/>
+            <stop offset="55%" stop-color="#AC3052"/>
+            <stop offset="100%" stop-color="#7A1A32"/>
+          </linearGradient>
+        </defs>
+        <rect width="200" height="200" rx="44" fill="url(#b-bg)"/>
+        <circle cx="100" cy="100" r="64" fill="none" stroke="url(#b-ring)" stroke-width="16" stroke-linecap="round" stroke-dasharray="290 78" transform="rotate(-60 100 100)"/>
+        <circle cx="100" cy="100" r="10" fill="#FFADC7"/>
+      </svg>
+      <div style="font-size:42px;font-weight:700;letter-spacing:-0.05em">heree<span style="color:#AC3052">.</span></div>
+      <div style="display:flex;gap:8px">
+        <div style="width:32px;height:32px;border-radius:8px;background:#FFADC7;border:0.5px solid rgba(255,255,255,0.1)"></div>
+        <div style="width:32px;height:32px;border-radius:8px;background:#AC3052"></div>
+        <div style="width:32px;height:32px;border-radius:8px;background:#7A1A32"></div>
+        <div style="width:32px;height:32px;border-radius:8px;background:#4A0E1E"></div>
+        <div style="width:32px;height:32px;border-radius:8px;background:#2B0E18"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed columns -->
+  <div class="cols">
+    <!-- Orange -->
+    <div class="col" style="background:linear-gradient(180deg,#1A1208 0%,#0F0B06 100%)">
+      <div class="col-head" style="background:rgba(232,144,26,0.08)">
+        <div class="logo-wrap">
+          <svg viewBox="0 0 100 100" width="72" height="72">
+            <defs><radialGradient id="oh" cx="28%" cy="28%" r="80%"><stop offset="0" stop-color="#2B1D08"/><stop offset="100%" stop-color="#0F0B06"/></radialGradient></defs>
+            <rect width="100" height="100" rx="22" fill="url(#oh)"/>
+            <circle cx="50" cy="50" r="32" fill="none" stroke="#E8901A" stroke-width="8.5" stroke-linecap="round" stroke-dasharray="147 40" transform="rotate(-60 50 50)"/>
+            <circle cx="50" cy="50" r="5.5" fill="#FFD89B"/>
+          </svg>
+        </div>
+        <div class="info">
+          <h2 style="color:#FFD89B">Desert Orange</h2>
+          <div class="sub">iPhone 17 Pro · wschodnie słońce</div>
+        </div>
+      </div>
+      <div class="col-body">
+        <!-- Tokens -->
+        <div>
+          <div class="row-label">Tokeny kolorów</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div class="swatch-row"><div class="swatch" style="background:#FFD89B"></div><div class="swatch-info"><div>accent-warm / centrum</div><div class="hex">#FFD89B</div></div></div>
+            <div class="swatch-row"><div class="swatch" style="background:#E8901A"></div><div class="swatch-info"><div>accent / CTA, pierścień</div><div class="hex">#E8901A</div></div></div>
+            <div class="swatch-row"><div class="swatch" style="background:#B86010"></div><div class="swatch-info"><div>accent-deep / pressed</div><div class="hex">#B86010</div></div></div>
+            <div class="swatch-row"><div class="swatch" style="background:#2B1D08"></div><div class="swatch-info"><div>bg-0 / najgłębsze tło</div><div class="hex">#2B1D08 → #0F0B06</div></div></div>
+          </div>
+        </div>
+        <!-- Scores -->
+        <div class="score-section">
+          <div class="score-row"><span class="score-lbl">Ciepło / zaproszenie</span><div class="bar"><div class="bar-fill" style="background:#E8901A;width:96%"></div></div><span class="score-num">9.6</span></div>
+          <div class="score-row"><span class="score-lbl">Energia / spontaniczność</span><div class="bar"><div class="bar-fill" style="background:#E8901A;width:92%"></div></div><span class="score-num">9.2</span></div>
+          <div class="score-row"><span class="score-lbl">Oryginalność App Store</span><div class="bar"><div class="bar-fill" style="background:#E8901A;width:82%"></div></div><span class="score-num">8.2</span></div>
+          <div class="score-row"><span class="score-lbl">Inkluzywność (niski próg wejścia)</span><div class="bar"><div class="bar-fill" style="background:#E8901A;width:88%"></div></div><span class="score-num">8.8</span></div>
+          <div class="score-row"><span class="score-lbl">Czytelność WCAG (CTA na bg)</span><div class="bar"><div class="bar-fill" style="background:#E8901A;width:90%"></div></div><span class="score-num">AA ✓</span></div>
+        </div>
+        <!-- UI button preview -->
+        <div>
+          <div class="row-label">Przycisk CTA</div>
+          <div style="background:linear-gradient(180deg,#FFD89B,#E8901A 55%,#B86010);border-radius:16px;height:52px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px;color:#1A0A00;box-shadow:0 10px 24px -4px rgba(232,144,26,0.45)">
+            Wyślij kod →
+          </div>
+        </div>
+        <!-- Verdict -->
+        <div class="verdict-box" style="background:rgba(232,144,26,0.08);border:0.5px solid rgba(232,144,26,0.2)">
+          <strong style="color:#FFD89B">☀ Wschód słońca — "początek nowej relacji"</strong>
+          Amber to kolor świtu, lamp ulicznych, kawiarnianych okien wieczorem. Na ciemnym tle daje maksymalne ciepło i niski próg emocjonalny — "wejdź, jest ciepło". Poczucie spontaniczności i energii. Pasuje do metaphory Heree jako nawigacji, która zapala się gdy jesteś w ruchu.
+        </div>
+      </div>
+    </div>
+
+    <!-- Burgundy -->
+    <div class="col" style="background:linear-gradient(180deg,#1A0810 0%,#0F060A 100%)">
+      <div class="col-head" style="background:rgba(172,48,82,0.08)">
+        <div class="logo-wrap">
+          <svg viewBox="0 0 100 100" width="72" height="72">
+            <defs><radialGradient id="bh" cx="28%" cy="28%" r="80%"><stop offset="0" stop-color="#2B0E18"/><stop offset="100%" stop-color="#0F060A"/></radialGradient></defs>
+            <rect width="100" height="100" rx="22" fill="url(#bh)"/>
+            <circle cx="50" cy="50" r="32" fill="none" stroke="#AC3052" stroke-width="8.5" stroke-linecap="round" stroke-dasharray="147 40" transform="rotate(-60 50 50)"/>
+            <circle cx="50" cy="50" r="5.5" fill="#FFADC7"/>
+          </svg>
+        </div>
+        <div class="info">
+          <h2 style="color:#FFADC7">Desert Burgundy</h2>
+          <div class="sub">iPhone 18 · koniec dnia, nocne życie</div>
+        </div>
+      </div>
+      <div class="col-body">
+        <div>
+          <div class="row-label">Tokeny kolorów</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div class="swatch-row"><div class="swatch" style="background:#FFADC7"></div><div class="swatch-info"><div>accent-warm / centrum</div><div class="hex">#FFADC7</div></div></div>
+            <div class="swatch-row"><div class="swatch" style="background:#AC3052"></div><div class="swatch-info"><div>accent / CTA, pierścień</div><div class="hex">#AC3052</div></div></div>
+            <div class="swatch-row"><div class="swatch" style="background:#7A1A32"></div><div class="swatch-info"><div>accent-deep / pressed</div><div class="hex">#7A1A32</div></div></div>
+            <div class="swatch-row"><div class="swatch" style="background:#2B0E18"></div><div class="swatch-info"><div>bg-0 / najgłębsze tło</div><div class="hex">#2B0E18 → #0F060A</div></div></div>
+          </div>
+        </div>
+        <div class="score-section">
+          <div class="score-row"><span class="score-lbl">Ciepło / zaproszenie</span><div class="bar"><div class="bar-fill" style="background:#AC3052;width:72%"></div></div><span class="score-num">7.2</span></div>
+          <div class="score-row"><span class="score-lbl">Energia / spontaniczność</span><div class="bar"><div class="bar-fill" style="background:#AC3052;width:65%"></div></div><span class="score-num">6.5</span></div>
+          <div class="score-row"><span class="score-lbl">Oryginalność App Store</span><div class="bar"><div class="bar-fill" style="background:#AC3052;width:94%"></div></div><span class="score-num">9.4</span></div>
+          <div class="score-row"><span class="score-lbl">Inkluzywność (niski próg wejścia)</span><div class="bar"><div class="bar-fill" style="background:#AC3052;width:60%"></div></div><span class="score-num">6.0</span></div>
+          <div class="score-row"><span class="score-lbl">Czytelność WCAG (CTA na bg)</span><div class="bar"><div class="bar-fill" style="background:#AC3052;width:82%"></div></div><span class="score-num">AA ✓</span></div>
+        </div>
+        <div>
+          <div class="row-label">Przycisk CTA</div>
+          <div style="background:linear-gradient(180deg,#FFADC7,#AC3052 55%,#7A1A32);border-radius:16px;height:52px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px;color:#1A0008;box-shadow:0 10px 24px -4px rgba(172,48,82,0.45)">
+            Wyślij kod →
+          </div>
+        </div>
+        <div class="verdict-box" style="background:rgba(172,48,82,0.08);border:0.5px solid rgba(172,48,82,0.2)">
+          <strong style="color:#FFADC7">🍷 Zachód słońca — "koniec dnia, czas na połączenie"</strong>
+          Burgundy to kolor zmierzchu, wina, nocnego baru gdy miasto zwalnia. Bardziej premium, bardziej "nocne życie". Wyższy próg emocjonalny — "ekskluzywne". Unikatowy w App Store, brak bezpośredniej konkurencji. Ryzyko: mniej spontaniczny, bardziej premedytowany.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Final decision -->
+  <div class="rec" style="background:linear-gradient(135deg,#2B1D08,#0F0B06)">
+    <svg viewBox="0 0 200 200" width="140" height="140" style="flex-shrink:0;filter:drop-shadow(0 0 40px rgba(232,144,26,0.5))">
+      <defs>
+        <radialGradient id="fin-bg" cx="28%" cy="28%" r="85%">
+          <stop offset="0" stop-color="#2B1D08"/>
+          <stop offset="100%" stop-color="#0F0B06"/>
+        </radialGradient>
+        <linearGradient id="fin-ring" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#FFD89B"/>
+          <stop offset="55%" stop-color="#E8901A"/>
+          <stop offset="100%" stop-color="#B86010"/>
+        </linearGradient>
+      </defs>
+      <rect width="200" height="200" rx="44" fill="url(#fin-bg)"/>
+      <circle cx="100" cy="100" r="64" fill="none" stroke="url(#fin-ring)" stroke-width="16" stroke-linecap="round" stroke-dasharray="290 78" transform="rotate(-60 100 100)"/>
+      <circle cx="100" cy="100" r="10" fill="#FFD89B"/>
+    </svg>
+    <div class="text">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#5B5550;margin-bottom:10px">Rekomendacja</div>
+      <h2>Desert Orange — wschód słońca</h2>
+      <p>Twoja metafora "początek nowej relacji" idealnie rezonuje z <strong style="color:#FFD89B">amberem wschodzącego słońca</strong>, nie zachodzącego. Ciepło, energia, zaproszenie bez bariery. Burgundy jest piękne i unikalne, ale wymaga od usera "wejścia w nastrój" — amber wychodzi do niego pierwszy. Jak Heree powinno działać.</p>
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <div style="padding:8px 16px;background:rgba(232,144,26,0.15);border:0.5px solid rgba(232,144,26,0.3);border-radius:10px;font-size:12px;color:#FFD89B;font-family:'JetBrains Mono',monospace">accent #E8901A</div>
+        <div style="padding:8px 16px;background:rgba(255,216,155,0.1);border:0.5px solid rgba(255,216,155,0.2);border-radius:10px;font-size:12px;color:#FFD89B;font-family:'JetBrains Mono',monospace">warm #FFD89B</div>
+        <div style="padding:8px 16px;background:rgba(184,96,16,0.15);border:0.5px solid rgba(184,96,16,0.3);border-radius:10px;font-size:12px;color:#B86010;font-family:'JetBrains Mono',monospace">deep #B86010</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

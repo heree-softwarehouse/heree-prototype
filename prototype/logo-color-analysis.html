@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Heree · Logo Color Analysis — Direction 02 Aperture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0F1014; --panel: #161821; --panel-2: #1C1F2A;
+  --ink: #E8EAF0; --ink-dim: #8E94A6; --ink-faint: #5B6176;
+  --stroke: rgba(200,210,230,0.10); --stroke-strong: rgba(200,210,230,0.18);
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --sans: 'Inter Tight', system-ui, sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+.shell{max-width:1320px;margin:0 auto;padding:56px 40px 120px}
+.crumb{font-family:var(--mono);font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:14px}
+h1{font-size:48px;letter-spacing:-0.03em;font-weight:600;margin:0 0 12px;line-height:1.02}
+.lede{font-size:15px;color:var(--ink-dim);max-width:72ch;line-height:1.6;margin-bottom:48px}
+.section{margin-bottom:72px}
+.section-head{display:flex;align-items:baseline;gap:14px;margin-bottom:24px;padding-bottom:14px;border-bottom:1px solid var(--stroke)}
+.section-head h2{font-size:22px;font-weight:600;letter-spacing:-0.02em;margin:0}
+.section-head p{font-size:13px;color:var(--ink-dim);margin:0;max-width:72ch}
+.row{display:flex;gap:14px;flex-wrap:wrap}
+.cell{background:var(--panel);border:0.5px solid var(--stroke);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:12px}
+.cap{font-family:var(--mono);font-size:9.5px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-faint)}
+.stage{flex:1;display:flex;align-items:center;justify-content:center;min-height:100px}
+.token{font-family:var(--mono);font-size:10.5px;letter-spacing:0.04em;color:var(--ink-faint)}
+.verdict{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:500;margin-top:4px}
+.verdict.go{color:#5CBF92} .verdict.warn{color:#FFD89B} .verdict.no{color:#FF7B85}
+.verdict::before{content:'';width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.verdict.go::before{background:#5CBF92} .verdict.warn::before{background:#FFD89B} .verdict.no::before{background:#FF7B85}
+.note{font-size:12px;color:var(--ink-dim);line-height:1.55}
+
+/* Aperture mark helpers */
+.ap{display:flex;align-items:center;justify-content:center}
+
+/* palette strip */
+.strip{display:flex;gap:0;border-radius:12px;overflow:hidden;height:52px;flex:1}
+.strip span{flex:1}
+
+/* wcag badge */
+.wcag{font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:5px;font-weight:500}
+.aaa{background:rgba(92,191,146,0.14);color:#5CBF92;border:0.5px solid rgba(92,191,146,0.3)}
+.aa{background:rgba(255,216,155,0.14);color:#FFD89B;border:0.5px solid rgba(255,216,155,0.3)}
+.fail{background:rgba(255,123,133,0.14);color:#FF7B85;border:0.5px solid rgba(255,123,133,0.3)}
+
+/* emotion grid */
+.emo-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.emo-cell{background:var(--panel);border:0.5px solid var(--stroke);border-radius:14px;padding:16px 12px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+.emo-cell .name{font-weight:600;font-size:12px}
+.emo-cell .word{font-size:11px;color:var(--ink-dim);line-height:1.4}
+.emo-cell .score{font-family:var(--mono);font-size:9px;color:var(--ink-faint);letter-spacing:0.1em;text-transform:uppercase}
+
+/* combo grid */
+.combo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.combo-cell{border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+.combo-head{padding:24px;display:flex;align-items:center;gap:14px}
+.combo-head .wm{font-size:28px;font-weight:700;letter-spacing:-0.04em;line-height:1}
+.combo-body{flex:1;padding:16px;display:flex;flex-direction:column;gap:8px}
+.combo-body .tag{font-family:var(--mono);font-size:9px;letter-spacing:0.16em;text-transform:uppercase;opacity:0.55}
+.combo-body .score-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px}
+.combo-body .label{font-size:11.5px;opacity:0.85}
+.score-bar{height:4px;border-radius:2px;background:rgba(255,255,255,0.12)}
+.score-bar-fill{height:100%;border-radius:2px}
+
+/* dark/light matrix */
+.matrix{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.m-phone{border-radius:28px;padding:24px 20px 18px;position:relative}
+.m-phone .m-status{font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;opacity:0.45;margin-bottom:18px}
+.m-phone .m-logo{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.m-phone .m-wm{font-size:26px;font-weight:700;letter-spacing:-0.04em}
+.m-phone .m-sub{font-size:11px;opacity:0.5;letter-spacing:0.12em;text-transform:uppercase;font-family:var(--mono)}
+
+/* recommended section */
+.hero-palette{border-radius:22px;overflow:hidden;border:0.5px solid var(--stroke-strong)}
+.hp-top{height:220px;display:flex;align-items:center;justify-content:center;gap:28px}
+.hp-swatch-row{display:flex;gap:0}
+.hp-swatch{padding:20px 24px;display:flex;flex-direction:column;gap:8px;border-top:1px solid rgba(255,255,255,0.08)}
+.hp-swatch .name{font-family:var(--mono);font-size:9px;letter-spacing:0.16em;text-transform:uppercase;opacity:0.6}
+.hp-swatch .hex{font-family:var(--mono);font-size:11.5px;letter-spacing:0.06em}
+.hp-swatch .desc{font-size:11px;opacity:0.65;margin-top:2px}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="crumb">Heree · Logo Color Analysis · Direction 02 · Open Aperture</div>
+  <h1>Apertura, która otwiera się<br/>na właściwy kolor.</h1>
+  <p class="lede">
+    Kształt apertura jest zdecydowany — okrąg z otwarciem NE i ciepłym centrum. Jego siła zależy
+    od tego, jak kolor <strong>wzmacnia metaforę otwarcia</strong>: czy środkowy świetlik jest ciepły czy zimny,
+    czy pierścień odpycha czy zaprasza, czy całość działa na dark i light home screen jednocześnie.
+  </p>
+
+  <!-- 1. EMOTION MAP -->
+  <div class="section">
+    <div class="section-head">
+      <h2>1 · Mapa emocjonalna</h2>
+      <p>Jak 6 kluczowych kolorów akcent koresponduje z emocją marki: otwartość · bliskość · spontaniczność · bezpieczeństwo · energia · inkluzywność</p>
+    </div>
+    <div class="emo-grid">
+      <!-- Electric Blue -->
+      <div class="emo-cell">
+        <svg viewBox="0 0 100 100" width="70" height="70">
+          <rect width="100" height="100" rx="22" fill="#0F1B35"/>
+          <circle cx="50" cy="50" r="32" fill="none" stroke="#1E6BE6" stroke-width="9" stroke-linecap="round" stroke-dasharray="150 44" transform="rotate(-60 50 50)"/>
+          <circle cx="50" cy="50" r="6" fill="#FFD89B"/>
+        </svg>
+        <div class="name" style="color:#5A9EFF">Electric Blue</div>
+        <div class="word">zaufanie · precyzja · tech · chłodny</div>
+        <div class="score">Otwartość 6/10 · Ciepło 3/10</div>
+        <div class="verdict warn">zbyt technologiczny, traci ciepło</div>
+      </div>
+      <!-- Warm Amber -->
+      <div class="emo-cell">
+        <svg viewBox="0 0 100 100" width="70" height="70">
+          <rect width="100" height="100" rx="22" fill="#1A1308"/>
+          <circle cx="50" cy="50" r="32" fill="none" stroke="#E8901A" stroke-width="9" stroke-linecap="round" stroke-dasharray="150 44" transform="rotate(-60 50 50)"/>
+          <circle cx="50" cy="50" r="6" fill="#FFD89B"/>
+        </svg>
+        <div class="name" style="color:#E8901A">Warm Amber</div>
+        <div class="word">ciepło · energia · spontaniczność · ulica</div>
+        <div class="score">Otwartość 8/10 · Ciepło 9/10</div>
+        <div class="verdict go">najcieplejsze, mocne city vibes</div>
+      </div>
+      <!-- Deep Teal -->
+      <div class="emo-cell">
+        <svg viewBox="0 0 100 100" width="70" height="70">
+          <rect width="100" height="100" rx="22" fill="#091918"/>
+          <circle cx="50" cy="50" r="32" fill="none" stroke="#1BA893" stroke-width="9" stroke-linecap="round" stroke-dasharray="150 44" transform="rotate(-60 50 50)"/>
+          <circle cx="50" cy="50" r="6" fill="#FFD89B"/>
+        </svg>
+        <div class="name" style="color:#2EC4B0">Deep Teal</div>
+        <div class="word">spokój · natura · zdrowie · neutralne</div>
+        <div class="score">Otwartość 7/10 · Ciepło 5/10</div>
+        <div class="verdict warn">dobry, ale nie wyróżnia się w App Store</div>
+      </div>
+      <!-- Coral -->
+      <div class="emo-cell">
+        <svg viewBox="0 0 100 100" width="70" height="70">
+          <rect width="100" height="100" rx="22" fill="#1A0C0A"/>
+          <circle cx="50" cy="50" r="32" fill="none" stroke="#E85F2C" stroke-width="9" stroke-linecap="round" stroke-dasharray="150 44" transform="rotate(-60 50 50)"/>
+          <circle cx="50" cy="50" r="6" fill="#FFD89B"/>
+        </svg>
+        <div class="name" style="color:#FF7A4D">Coral / iPhone Orange</div>
+        <div class="word">energia · uwaga · akcja · nieco randkowy</div>
+        <div class="score">Otwartość 7/10 · Ciepło 8/10</div>
+        <div class="verdict warn">ciepły, ale kojarzy się z Tinder</div>
+      </div>
+      <!-- Forest Green -->
+      <div class="emo-cell">
+        <svg viewBox="0 0 100 100" width="70" height="70">
+          <rect width="100" height="100" rx="22" fill="#0C1A0F"/>
+          <circle cx="50" cy="50" r="32" fill="none" stroke="#2E7D5B" stroke-width="9" stroke-linecap="round" stroke-dasharray="150 44" transform="rotate(-60 50 50)"/>
+          <circle cx="50" cy="50" r="6" fill="#FFD89B"/>
+        </svg>
+        <div class="name" style="color:#5CBF92">Forest Green</div>
+        <div class="word">inkluzywność · lokalność · park · bezpieczeństwo</div>
+        <div class="score">Otwartość 7/10 · Ciepło 6/10</div>
+        <div class="verdict go">wyróżnia się, nie randkowy, inkluzywny</div>
+      </div>
+      <!-- Deep Violet -->
+      <div class="emo-cell">
+        <svg viewBox="0 0 100 100" width="70" height="70">
+          <rect width="100" height="100" rx="22" fill="#100D1C"/>
+          <circle cx="50" cy="50" r="32" fill="none" stroke="#7C5DEE" stroke-width="9" stroke-linecap="round" stroke-dasharray="150 44" transform="rotate(-60 50 50)"/>
+          <circle cx="50" cy="50" r="6" fill="#FFD89B"/>
+        </svg>
+        <div class="name" style="color:#A98DFF">Deep Violet</div>
+        <div class="word">premium · kreatywność · nocne życie · zimniejszy</div>
+        <div class="score">Otwartość 6/10 · Ciepło 4/10</div>
+        <div class="verdict warn">bardzo premium, mniej przystępne</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. INNER LIGHT ANALYSIS -->
+  <div class="section">
+    <div class="section-head">
+      <h2>2 · Centrum — "ciepły świetlik"</h2>
+      <p>Mała kropka w centrum to kluczowa decyzja: jej kolor mówi czy środek jest człowiekiem, słońcem, miejscem czy lampą. Testujemy 4 warianty na tle rekomendowanej palety amber.</p>
+    </div>
+    <div class="row">
+      <!-- White centre -->
+      <div class="cell" style="flex:1">
+        <div class="cap">Centrum białe · czyste</div>
+        <div class="stage">
+          <svg viewBox="0 0 160 160" width="130" height="130">
+            <rect width="160" height="160" rx="36" fill="#1A1308"/>
+            <circle cx="80" cy="80" r="50" fill="none" stroke="#E8901A" stroke-width="14" stroke-linecap="round" stroke-dasharray="230 60" transform="rotate(-60 80 80)"/>
+            <circle cx="80" cy="80" r="9" fill="#FFFFFF"/>
+          </svg>
+        </div>
+        <div class="token">#FFFFFF</div>
+        <div class="verdict warn">precyzyjny, chłodny — bardziej tech</div>
+      </div>
+      <!-- Warm amber centre -->
+      <div class="cell" style="flex:1">
+        <div class="cap">Centrum amber · ciepłe ★ recommended</div>
+        <div class="stage">
+          <svg viewBox="0 0 160 160" width="130" height="130">
+            <rect width="160" height="160" rx="36" fill="#1A1308"/>
+            <circle cx="80" cy="80" r="50" fill="none" stroke="#E8901A" stroke-width="14" stroke-linecap="round" stroke-dasharray="230 60" transform="rotate(-60 80 80)"/>
+            <circle cx="80" cy="80" r="9" fill="#FFD89B"/>
+          </svg>
+        </div>
+        <div class="token">#FFD89B</div>
+        <div class="verdict go">człowiek wewnątrz, słońce, ciepłe zaproszenie</div>
+      </div>
+      <!-- Accent centre -->
+      <div class="cell" style="flex:1">
+        <div class="cap">Centrum = pierścień (monochromatyczne)</div>
+        <div class="stage">
+          <svg viewBox="0 0 160 160" width="130" height="130">
+            <rect width="160" height="160" rx="36" fill="#1A1308"/>
+            <circle cx="80" cy="80" r="50" fill="none" stroke="#E8901A" stroke-width="14" stroke-linecap="round" stroke-dasharray="230 60" transform="rotate(-60 80 80)"/>
+            <circle cx="80" cy="80" r="9" fill="#E8901A"/>
+          </svg>
+        </div>
+        <div class="token">#E8901A</div>
+        <div class="verdict warn">spójne ale traci kontrast wewnątrz</div>
+      </div>
+      <!-- No centre -->
+      <div class="cell" style="flex:1">
+        <div class="cap">Bez centrum · czysta apertura</div>
+        <div class="stage">
+          <svg viewBox="0 0 160 160" width="130" height="130">
+            <rect width="160" height="160" rx="36" fill="#1A1308"/>
+            <circle cx="80" cy="80" r="50" fill="none" stroke="#E8901A" stroke-width="14" stroke-linecap="round" stroke-dasharray="230 60" transform="rotate(-60 80 80)"/>
+          </svg>
+        </div>
+        <div class="token">none</div>
+        <div class="verdict no">pusta — traci metaforę człowieka w centrum</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. RING THICKNESS -->
+  <div class="section">
+    <div class="section-head">
+      <h2>3 · Grubość pierścienia</h2>
+      <p>Przy stałym kolorze zmiana grubości dramatycznie zmienia charakter — od delikatnego do asertywnego.</p>
+    </div>
+    <div class="row">
+      <div class="cell" style="flex:1">
+        <div class="cap">Thin · 7px @ 160</div>
+        <div class="stage">
+          <svg viewBox="0 0 160 160" width="120" height="120">
+            <rect width="160" height="160" rx="36" fill="#1A1308"/>
+            <circle cx="80" cy="80" r="52" fill="none" stroke="#E8901A" stroke-width="7" stroke-linecap="round" stroke-dasharray="240 58" transform="rotate(-60 80 80)"/>
+            <circle cx="80" cy="80" r="7" fill="#FFD89B"/>
+          </svg>
+        </div>
+        <div class="note">Elegancki, minimalistyczny, trochę kruchy. Może znikać w małych rozmiarach.</div>
+        <div class="verdict warn">OK od 40px, gubi się na 24px</div>
+      </div>
+      <div class="cell" style="flex:1">
+        <div class="cap">Medium · 13px @ 160 ★ recommended</div>
+        <div class="stage">
+          <svg viewBox="0 0 160 160" width="120" height="120">
+            <rect width="160" height="160" rx="36" fill="#1A1308"/>
+            <circle cx="80" cy="80" r="50" fill="none" stroke="#E8901A" stroke-width="13" stroke-linecap="round" stroke-dasharray="230 58" transform="rotate(-60 80 80)"/>
+            <circle cx="80" cy="80" r="8" fill="#FFD89B"/>
+          </svg>
+        </div>
+        <div class="note">Silny, pewny siebie. Czytelny od 24px. Balans między delikatnością a siłą.</div>
+        <div class="verdict go">działa od 16px do billboardu</div>
+      </div>
+      <div class="cell" style="flex:1">
+        <div class="cap">Bold · 20px @ 160</div>
+        <div class="stage">
+          <svg viewBox="0 0 160 160" width="120" height="120">
+            <rect width="160" height="160" rx="36" fill="#1A1308"/>
+            <circle cx="80" cy="80" r="46" fill="none" stroke="#E8901A" stroke-width="20" stroke-linecap="round" stroke-dasharray="210 58" transform="rotate(-60 80 80)"/>
+            <circle cx="80" cy="80" r="8" fill="#FFD89B"/>
+          </svg>
+        </div>
+        <div class="note">Bardzo asertywny, niemal agresywny. Ryzyko masywności przy dużych rozmiarach.</div>
+        <div class="verdict warn">mocny, ale można się przesycić</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. BACKGROUND PALETTE -->
+  <div class="section">
+    <div class="section-head">
+      <h2>4 · Tło ikony — 6 opcji</h2>
+      <p>Kolor tła kwadratika (app icon) jest równie ważny co kolor pierścienia. Testujemy 6 kombinacji.</p>
+    </div>
+    <div class="row" style="flex-wrap:wrap">
+      <!-- Option A: Deep warm dark -->
+      <div class="cell" style="width:calc(33% - 10px)">
+        <div class="cap">A · głęboka czerń z ciepłym podkładem ★ best</div>
+        <div class="stage">
+          <svg viewBox="0 0 160 160" width="130" height="130">
+            <defs>
+              <radialGradient id="bg-a" cx="30%" cy="30%" r="80%">
+                <stop offset="0" stop-color="#2B1D08"/>
+                <stop offset="100%" stop-color="#0F0B06"/>
+              </radialGradient>
+            </defs>
+            <rect width="160" height="160" rx="36" fill="url(#bg-a)"/>
+            <circle cx="80" cy="80" r="50" fill="none" stroke="#E8901A" stroke-width="13" stroke-linecap="round" stroke-dasharray="230 58" transform="rotate(-60 80 80)"/>
+            <circle cx="80" cy="80" r="8" fill="#FFD89B"/>
+          </svg>
+        </div>
+        <div class="token">bg: #0F0B06 → #2B1D08 radial</div>
+        <div class="verdict go">amber na ciepłej czerni — maksymalne ciepło</div>
+      </div>
+      <!-- Option B: Pure black -->
+      <div class="cell" style="width:calc(33% - 10px)">
+        <div class="cap">B · czysta czerń</div>
+        <div class="stage">
+          <svg viewBox="0 0 160 160" width="130" height="130">
+            <rect width="160" height="160" rx="36" fill="#000000"/>
+            <circle cx="80" cy="80" r="50" fill="none" stroke="#E8901A" stroke-width="13" stroke-linecap="round" stroke-dasharray="230 58" transform="rotate(-60 80 80)"/>
+            <circle cx="80" cy="80" r="8" fill="#FFD89B"/>
+          </svg>
+        </div>
+        <div class="token">bg: #000000</div>
+        <div class="verdict warn">premium, ale może być zbyt "tech gadget"</div>
+      </div>
+      <!-- Option C: dark navy -->
+      <div class="cell" style="width:calc(33% - 10px)">
+        <div class="cap">C · głęboki granat</div>
+        <div class="stage">
+          <svg viewBox="0 0 160 160" width="130" height="130">
+            <rect width="160" height="160" rx="36" fill="#0B1220"/>
+            <circle cx="80" cy="80" r="50" fill="none" stroke="#E8901A" stroke-width="13" stroke-linecap="round" stroke-dasharray="230 58" transform="rotate(-60 80 80)"/>
+            <circle cx="80" cy="80" r="8" fill="#FFD89B"/>
+          </svg>
+        </div>
+        <div class="token">bg: #0B1220</div>
+        <div class="verdict warn">granat z amber — niespójne temperatury</div>
+      </div>
+      <!-- Option D: warm white -->
+      <div class="cell" style="width:calc(33% - 10px)">
+        <div class="cap">D · jasne tło (light mode)</div>
+        <div class="stage">
+          <svg viewBox="0 0 160 160" width="130" height="130">
+            <rect width="160" height="160" rx="36" fill="#FDF6EE"/>
+            <circle cx="80" cy="80" r="50" fill="none" stroke="#B86010" stroke-width="13" stroke-linecap="round" stroke-dasharray="230 58" transform="rotate(-60 80 80)"/>
+            <circle cx="80" cy="80" r="8" fill="#B86010"/>
+          </svg>
+        </div>
+        <div class="token">bg: #FDF6EE, stroke: #B86010</div>
+        <div class="verdict go">ciepłe, papierowe — świetnie na light home screen</div>
+      </div>
+      <!-- Option E: amber gradient -->
+      <div class="cell" style="width:calc(33% - 10px)">
+        <div class="cap">E · gradient pierścień (glow)</div>
+        <div class="stage">
+          <svg viewBox="0 0 160 160" width="130" height="130">
+            <defs>
+              <radialGradient id="bg-e" cx="30%" cy="30%" r="80%">
+                <stop offset="0" stop-color="#2B1D08"/>
+                <stop offset="100%" stop-color="#0F0B06"/>
+              </radialGradient>
+              <linearGradient id="ring-e" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#FFD89B"/>
+                <stop offset="60%" stop-color="#E8901A"/>
+                <stop offset="100%" stop-color="#B86010"/>
+              </linearGradient>
+            </defs>
+            <rect width="160" height="160" rx="36" fill="url(#bg-e)"/>
+            <circle cx="80" cy="80" r="50" fill="none" stroke="url(#ring-e)" stroke-width="13" stroke-linecap="round" stroke-dasharray="230 58" transform="rotate(-60 80 80)"/>
+            <circle cx="80" cy="80" r="8" fill="#FFD89B"/>
+          </svg>
+        </div>
+        <div class="token">gradient pierścień #FFD89B → #E8901A → #B86010</div>
+        <div class="verdict go">najpiękniejszy na dużych formatach, trochę traci na 24px</div>
+      </div>
+      <!-- Option F: off-white -->
+      <div class="cell" style="width:calc(33% - 10px)">
+        <div class="cap">F · grafitowe tło (Kamil's direction)</div>
+        <div class="stage">
+          <svg viewBox="0 0 160 160" width="130" height="130">
+            <defs>
+              <radialGradient id="bg-f" cx="30%" cy="30%" r="80%">
+                <stop offset="0" stop-color="#2C2C30"/>
+                <stop offset="100%" stop-color="#0E0E10"/>
+              </radialGradient>
+            </defs>
+            <rect width="160" height="160" rx="36" fill="url(#bg-f)"/>
+            <circle cx="80" cy="80" r="50" fill="none" stroke="#F66A30" stroke-width="13" stroke-linecap="round" stroke-dasharray="230 58" transform="rotate(-60 80 80)"/>
+            <circle cx="80" cy="80" r="8" fill="#FFD89B"/>
+          </svg>
+        </div>
+        <div class="token">bg: graphite #0E0E10 → #2C2C30, accent: #F66A30</div>
+        <div class="verdict go">grafit z iPhone Orange — Kamil's vision ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. FULL PALETTE COMBOS -->
+  <div class="section">
+    <div class="section-head">
+      <h2>5 · Pełne kombinacje — warianty do głosowania</h2>
+      <p>Trzy finalne propozycje: logo + wordmark + UI accent + tło aplikacji. Każda ma inną osobowość, ale wszystkie używają kształtu apertura.</p>
+    </div>
+    <div class="combo-grid">
+      <!-- Combo 1: Graphite + iPhone Orange -->
+      <div class="combo-cell" style="background:linear-gradient(160deg,#1E1E22,#0E0E10)">
+        <div class="combo-head">
+          <svg viewBox="0 0 100 100" width="56" height="56">
+            <defs><radialGradient id="c1bg" cx="30%" cy="30%" r="80%"><stop offset="0" stop-color="#2C2C30"/><stop offset="100%" stop-color="#0E0E10"/></radialGradient></defs>
+            <rect width="100" height="100" rx="22" fill="url(#c1bg)"/>
+            <circle cx="50" cy="50" r="32" fill="none" stroke="#F66A30" stroke-width="9" stroke-linecap="round" stroke-dasharray="147 40" transform="rotate(-60 50 50)"/>
+            <circle cx="50" cy="50" r="5.5" fill="#FFD89B"/>
+          </svg>
+          <div>
+            <div class="combo-head wm" style="color:#F2F4F8">heree<span style="color:#F66A30">.</span></div>
+            <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:#5B6176;margin-top:4px">Graphite + iPhone Orange</div>
+          </div>
+        </div>
+        <div class="combo-body" style="background:rgba(255,255,255,0.03);border-radius:0 0 16px 16px">
+          <div class="tag">ocena dyrekcji</div>
+          <div class="score-row"><span class="label" style="color:#F2F4F8">Ciepło</span><div class="score-bar" style="width:60px"><div class="score-bar-fill" style="background:#F66A30;width:80%"></div></div></div>
+          <div class="score-row"><span class="label" style="color:#F2F4F8">Oryginalność</span><div class="score-bar" style="width:60px"><div class="score-bar-fill" style="background:#F66A30;width:75%"></div></div></div>
+          <div class="score-row"><span class="label" style="color:#F2F4F8">Inkluzywność</span><div class="score-bar" style="width:60px"><div class="score-bar-fill" style="background:#F66A30;width:70%"></div></div></div>
+          <div class="score-row"><span class="label" style="color:#F2F4F8">App Store wyróżnienie</span><div class="score-bar" style="width:60px"><div class="score-bar-fill" style="background:#F66A30;width:80%"></div></div></div>
+          <div style="font-size:11px;color:#8E94A6;margin-top:6px;line-height:1.5">Kamil's direction. Nowoczesny, czysty, iPhone-esque. Ryzyko: zbyt "tech", mało ludzki. Siła: świetny kontrast, iPhone Orange = natychmiast rozpoznawalny.</div>
+        </div>
+      </div>
+
+      <!-- Combo 2: Deep dark + Warm Amber -->
+      <div class="combo-cell" style="background:linear-gradient(160deg,#231A0C,#0F0B06)">
+        <div class="combo-head">
+          <svg viewBox="0 0 100 100" width="56" height="56">
+            <defs><radialGradient id="c2bg" cx="30%" cy="30%" r="80%"><stop offset="0" stop-color="#2B1D08"/><stop offset="100%" stop-color="#0F0B06"/></radialGradient></defs>
+            <rect width="100" height="100" rx="22" fill="url(#c2bg)"/>
+            <circle cx="50" cy="50" r="32" fill="none" stroke="#E8901A" stroke-width="9" stroke-linecap="round" stroke-dasharray="147 40" transform="rotate(-60 50 50)"/>
+            <circle cx="50" cy="50" r="5.5" fill="#FFD89B"/>
+          </svg>
+          <div>
+            <div class="combo-head wm" style="color:#F2F4F8">heree<span style="color:#E8901A">.</span></div>
+            <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:#5B6176;margin-top:4px">Warm Dark + Deep Amber</div>
+          </div>
+        </div>
+        <div class="combo-body" style="background:rgba(255,255,255,0.03);border-radius:0 0 16px 16px">
+          <div class="tag">ocena dyrekcji</div>
+          <div class="score-row"><span class="label" style="color:#F2F4F8">Ciepło</span><div class="score-bar" style="width:60px"><div class="score-bar-fill" style="background:#E8901A;width:95%"></div></div></div>
+          <div class="score-row"><span class="label" style="color:#F2F4F8">Oryginalność</span><div class="score-bar" style="width:60px"><div class="score-bar-fill" style="background:#E8901A;width:85%"></div></div></div>
+          <div class="score-row"><span class="label" style="color:#F2F4F8">Inkluzywność</span><div class="score-bar" style="width:60px"><div class="score-bar-fill" style="background:#E8901A;width:90%"></div></div></div>
+          <div class="score-row"><span class="label" style="color:#F2F4F8">App Store wyróżnienie</span><div class="score-bar" style="width:60px"><div class="score-bar-fill" style="background:#E8901A;width:88%"></div></div></div>
+          <div style="font-size:11px;color:#8E94A6;margin-top:6px;line-height:1.5">★ Najcieplejsza kombinacja. Ciemne tło z prawdziwym podkładem amber sprawia, że icon wygląda jak "żar" — ciepłe, ludzkie, zapraszające. Amber to barwa ulicznych świateł i kawiarnianych okien.</div>
+        </div>
+      </div>
+
+      <!-- Combo 3: Forest green dark -->
+      <div class="combo-cell" style="background:linear-gradient(160deg,#0E1C12,#080F0B)">
+        <div class="combo-head">
+          <svg viewBox="0 0 100 100" width="56" height="56">
+            <defs><radialGradient id="c3bg" cx="30%" cy="30%" r="80%"><stop offset="0" stop-color="#162918"/><stop offset="100%" stop-color="#080F0B"/></radialGradient></defs>
+            <rect width="100" height="100" rx="22" fill="url(#c3bg)"/>
+            <circle cx="50" cy="50" r="32" fill="none" stroke="#2E7D5B" stroke-width="9" stroke-linecap="round" stroke-dasharray="147 40" transform="rotate(-60 50 50)"/>
+            <circle cx="50" cy="50" r="5.5" fill="#FFD89B"/>
+          </svg>
+          <div>
+            <div class="combo-head wm" style="color:#F2F4F8">heree<span style="color:#5CBF92">.</span></div>
+            <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:#5B6176;margin-top:4px">Forest Dark + Deep Green</div>
+          </div>
+        </div>
+        <div class="combo-body" style="background:rgba(255,255,255,0.03);border-radius:0 0 16px 16px">
+          <div class="tag">ocena dyrekcji</div>
+          <div class="score-row"><span class="label" style="color:#F2F4F8">Ciepło</span><div class="score-bar" style="width:60px"><div class="score-bar-fill" style="background:#2E7D5B;width:60%"></div></div></div>
+          <div class="score-row"><span class="label" style="color:#F2F4F8">Oryginalność</span><div class="score-bar" style="width:60px"><div class="score-bar-fill" style="background:#2E7D5B;width:92%"></div></div></div>
+          <div class="score-row"><span class="label" style="color:#F2F4F8">Inkluzywność</span><div class="score-bar" style="width:60px"><div class="score-bar-fill" style="background:#2E7D5B;width:88%"></div></div></div>
+          <div class="score-row"><span class="label" style="color:#F2F4F8">App Store wyróżnienie</span><div class="score-bar" style="width:60px"><div class="score-bar-fill" style="background:#2E7D5B;width:95%"></div></div></div>
+          <div style="font-size:11px;color:#8E94A6;margin-top:6px;line-height:1.5">Najbardziej unikalny w App Store (brak bezpośredniej konkurencji w głębokiej zieleni). Amber centrum tworzy napięcie zielony/złoty = natura + człowiek. Ryzyko: kojarzy się z "ekologią", nie z miastem.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. RECOMMENDED -->
+  <div class="section">
+    <div class="section-head">
+      <h2>6 · Rekomendacja końcowa</h2>
+      <p>Synteza: kształt apertura + optymalna paleta pod kątem emocji, oryginalności i skalowania.</p>
+    </div>
+    <div class="hero-palette">
+      <!-- Dark: warm amber recommended -->
+      <div class="hp-top" style="background:linear-gradient(160deg,#231A0C 0%,#0F0B06 100%)">
+        <svg viewBox="0 0 200 200" width="180" height="180" style="filter:drop-shadow(0 0 60px rgba(232,144,26,0.5))">
+          <defs>
+            <radialGradient id="rec-bg" cx="30%" cy="30%" r="80%">
+              <stop offset="0" stop-color="#2B1D08"/>
+              <stop offset="100%" stop-color="#0F0B06"/>
+            </radialGradient>
+            <linearGradient id="rec-ring" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#FFD89B"/>
+              <stop offset="55%" stop-color="#E8901A"/>
+              <stop offset="100%" stop-color="#B86010"/>
+            </linearGradient>
+          </defs>
+          <rect width="200" height="200" rx="44" fill="url(#rec-bg)"/>
+          <circle cx="100" cy="100" r="64" fill="none" stroke="url(#rec-ring)" stroke-width="16" stroke-linecap="round" stroke-dasharray="290 76" transform="rotate(-60 100 100)"/>
+          <circle cx="100" cy="100" r="10" fill="#FFD89B"/>
+        </svg>
+        <div>
+          <div style="font-size:64px;font-weight:700;letter-spacing:-0.05em;color:#F2F4F8">heree<span style="color:#E8901A">.</span></div>
+          <div style="font-family:var(--mono);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#5B6176;margin-top:10px">Warm Amber · Dark background</div>
+        </div>
+      </div>
+      <div class="hp-swatch-row">
+        <div class="hp-swatch" style="flex:1;background:#0F0B06">
+          <div class="name">background-deep</div>
+          <div class="hex">#0F0B06</div>
+          <div class="desc">Ciepła czerń — podstawa ekranów</div>
+        </div>
+        <div class="hp-swatch" style="flex:1;background:#231A0C">
+          <div class="name">background-1</div>
+          <div class="hex">#231A0C</div>
+          <div class="desc">Ciepły grafit — karty, sheety</div>
+        </div>
+        <div class="hp-swatch" style="flex:1;background:#B86010">
+          <div class="name">accent-deep</div>
+          <div class="hex">#B86010</div>
+          <div class="desc">Głęboki amber — pressed, gradient</div>
+        </div>
+        <div class="hp-swatch" style="flex:1;background:#E8901A">
+          <div class="name">accent</div>
+          <div class="hex">#E8901A</div>
+          <div class="desc">Amber — CTA, active, pierścień</div>
+        </div>
+        <div class="hp-swatch" style="flex:1;background:#FFD89B">
+          <div class="name">accent-warm</div>
+          <div class="hex">#FFD89B</div>
+          <div class="desc">Ciepły świetlik — centrum, highlight</div>
+        </div>
+        <div class="hp-swatch" style="flex:1;background:#F2F4F8">
+          <div class="name">text</div>
+          <div class="hex">#F2F4F8</div>
+          <div class="desc">Biały tekst — lekko ciepły</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:14px;font-size:13px;color:var(--ink-dim);line-height:1.6;padding:18px;background:var(--panel);border-radius:14px;border:0.5px solid var(--stroke)">
+      <strong style="color:var(--ink)">Dlaczego amber, nie iPhone Orange:</strong> Amber (#E8901A) jest o 15–20° cieplejszy na kole barw niż iPhone Orange (#F66A30). Na czarnym tle wywołuje skojarzenie z "żarem", "lampą uliczną", "ciepłem kawiarni" — czyli dokładnie z przestrzenią miejską gdzie Heree żyje. iPhone Orange jest bardziej "tech notification" niż "human warmth". Obie barwy mają ten sam kontrast WCAG AA na ciemnym tle, ale amber ma wyższy potencjał emocjonalny w kontekście social/meeting app.<br/><br/>
+      <strong style="color:var(--ink)">Wyjątek:</strong> Jeśli kluczowym targetem jest 18–28 lat i "app store shelf impact" ważniejszy niż emocja, iPhone Orange jest właściwszym wyborem — jest bardziej agresywny, bardziej "premium notification". W tej sytuacji grafit Kamila (Combo 1) jest lepszym tłem niż ciepła czerń.
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

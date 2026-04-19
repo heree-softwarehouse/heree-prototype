@@ -10,18 +10,19 @@
 
 :root {
   /* Neutral surface scale — stays consistent across palettes */
-  --ink-0: #0A0B0F;
-  --ink-1: #111319;
-  --ink-2: #181B24;
-  --ink-3: #222634;
-  --ink-4: #2D3244;
+  /* Warm dark base — Option A: ciepła czerń z rozświetleniem top-left */
+  --ink-0: #0F0B06;
+  --ink-1: #161008;
+  --ink-2: #201508;
+  --ink-3: #2B1D0C;
+  --ink-4: #3A2810;
 
-  --stroke:        rgba(200, 210, 230, 0.12);
-  --stroke-strong: rgba(200, 210, 230, 0.24);
+  --stroke:        rgba(232, 200, 150, 0.10);
+  --stroke-strong: rgba(232, 200, 150, 0.20);
 
-  --text:       #F2F4F8;
-  --text-dim:   #B5BCCB;
-  --text-faint: #7E8699;
+  --text:       #F2EDE6;
+  --text-dim:   #B5A898;
+  --text-faint: #7E6E5A;
 
   --font-sans: 'Inter Tight', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --font-serif: 'Instrument Serif', 'New York', Georgia, serif;
@@ -33,25 +34,28 @@
   --ease-out: cubic-bezier(.2,.7,.2,1);
   --dur: 320ms;
 
-  /* Default accent (Sunset — overridden by data-palette) */
-  --accent:       #FF7A45;
-  --accent-soft:  #FFA478;
-  --accent-deep:  #E85F2C;
-  --accent-gloss: #FFC368;
-  --accent-2:     #FFC368;
-  --accent-3:     #5DD4B0;
-  --on-accent:    #1A0F0A;
-  --bg-tint-a:    rgba(255,122,69,0.14);
-  --bg-tint-b:    rgba(93,212,176,0.08);
-  --sheet-tint-a: #321A1F;
-  --sheet-tint-b: #1F1316;
+  /* Desert Orange — wschód słońca (canonical) */
+  --accent:       #E8901A;
+  --accent-soft:  #FFB84A;
+  --accent-deep:  #B86010;
+  --accent-gloss: #FFD89B;
+  --accent-2:     #FFD89B;
+  --accent-3:     #E8901A;
+  --on-accent:    #1A0A00;
+  --bg-tint-a:    rgba(232,144,26,0.12);
+  --bg-tint-b:    rgba(255,216,155,0.06);
+  --sheet-tint-a: #231A0C;
+  --sheet-tint-b: #161008;
 }
 
-:root[data-palette="sunset"] {
-  --accent: #FF7A45; --accent-soft: #FFA478; --accent-deep: #E85F2C; --accent-gloss: #FFC368;
-  --accent-2: #FFC368; --accent-3: #5DD4B0; --on-accent: #1A0F0A;
-  --bg-tint-a: rgba(255,122,69,0.14); --bg-tint-b: rgba(93,212,176,0.08);
-  --sheet-tint-a: #321A1F; --sheet-tint-b: #1F1316;
+:root[data-palette="graphite"] {
+  --ink-0: #0E0E10; --ink-1: #1B1B1F; --ink-2: #242428; --ink-3: #2C2C30; --ink-4: #3A3A3E;
+  --stroke: rgba(200,210,230,0.12); --stroke-strong: rgba(200,210,230,0.22);
+  --text: #F2F4F8; --text-dim: #B5BCCB; --text-faint: #7E8699;
+  --accent: #F66A30; --accent-soft: #FF9564; --accent-deep: #D94F18; --accent-gloss: #FFB27A;
+  --accent-2: #FFB27A; --accent-3: #F66A30; --on-accent: #1A0A04;
+  --bg-tint-a: rgba(246,106,48,0.10); --bg-tint-b: rgba(246,106,48,0.04);
+  --sheet-tint-a: #242428; --sheet-tint-b: #1B1B1F;
 }
 
 :root[data-palette="moss"] {
@@ -80,8 +84,8 @@ html, body {
 
 body {
   background:
-    radial-gradient(900px 700px at 12% -10%, var(--bg-tint-a), transparent 55%),
-    radial-gradient(800px 600px at 110% 110%, var(--bg-tint-b), transparent 55%),
+    radial-gradient(900px 700px at 8% -8%, color-mix(in oklch, var(--accent) 18%, transparent), transparent 55%),
+    radial-gradient(600px 500px at 105% 108%, var(--bg-tint-b), transparent 55%),
     var(--ink-0);
 }
 
@@ -140,8 +144,8 @@ body {
 .app {
   position: absolute; inset: 0; border-radius: 46px; overflow: hidden;
   background:
-    radial-gradient(400px 320px at 10% 4%, var(--bg-tint-a), transparent 55%),
-    radial-gradient(460px 380px at 95% 96%, var(--bg-tint-b), transparent 60%),
+    radial-gradient(400px 320px at 8% 4%, color-mix(in oklch, var(--accent) 14%, transparent), transparent 55%),
+    radial-gradient(360px 280px at 96% 96%, var(--bg-tint-b), transparent 60%),
     linear-gradient(180deg, var(--ink-1) 0%, var(--ink-0) 100%);
 }
 .scene {
@@ -294,7 +298,8 @@ body {
   <section>
     <div class="label">Paleta</div>
     <div class="sw-row" id="tw-palette">
-      <div class="sw on" data-p="sunset" data-name="sunset" style="background:linear-gradient(135deg,#FFC368,#FF7A45 55%,#E85F2C)"></div>
+      <div class="sw on" data-p="amber" data-name="amber" style="background:linear-gradient(135deg,#FFD89B,#E8901A 55%,#B86010)"></div>
+      <div class="sw" data-p="graphite" data-name="graphite" style="background:linear-gradient(135deg,#3A3A3E,#1B1B1F 55%,#F66A30)"></div>
       <div class="sw" data-p="moss" data-name="moss" style="background:linear-gradient(135deg,#C8F0CC,#7BD389 55%,#56B166)"></div>
       <div class="sw" data-p="iris" data-name="iris" style="background:linear-gradient(135deg,#DDD0FF,#A78BFA 55%,#7C5DEE)"></div>
     </div>
@@ -310,6 +315,13 @@ body {
     <div class="label">Ekran</div>
     <div class="row" id="tw-scene" style="flex-wrap:wrap"></div>
   </section>
+  <section>
+    <div class="label">Splash</div>
+    <div class="row" id="tw-splash">
+      <div class="pill on" data-a="0">tap, żeby zacząć</div>
+      <div class="pill" data-a="1">auto (1.7s)</div>
+    </div>
+  </section>
 </div>
 
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
@@ -319,8 +331,9 @@ body {
 <script>
 /* Config applied before app mount — persisted via __edit_mode_set_keys */
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "palette": "iris",
-  "dashboardMode": "cruising"
+  "palette": "amber",
+  "dashboardMode": "swiping",
+  "splashAuto": false
 }/*EDITMODE-END*/;
 document.documentElement.setAttribute('data-palette', TWEAK_DEFAULTS.palette);
 window.__HEREE_TWEAKS = { ...TWEAK_DEFAULTS };
@@ -356,15 +369,24 @@ function HereeWordmark({ size=44 }) {
   );
 }
 function HereePin({ size=108 }) {
+  const s = size;
   return (
-    <div style={{
-      width:size, height:size, borderRadius:'50%',
-      background:'radial-gradient(circle at 30% 30%, var(--accent-gloss) 0%, var(--accent) 55%, var(--accent-deep) 100%)',
-      boxShadow:'0 0 60px color-mix(in oklch, var(--accent) 60%, transparent), inset 0 -14px 26px rgba(0,0,0,0.35), inset 0 8px 14px rgba(255,255,255,0.35)',
-      display:'flex',alignItems:'center',justifyContent:'center',
-      color:'var(--on-accent)',fontSize:size*0.46,fontWeight:800,letterSpacing:'-0.06em',
-      fontFamily:'var(--font-sans)'
-    }}>h</div>
+    <svg width={s} height={s} viewBox="0 0 120 120" style={{filter:'drop-shadow(0 0 40px color-mix(in oklch, var(--accent) 55%, transparent))'}}>
+      <defs>
+        <radialGradient id="hp-bg" cx="28%" cy="28%" r="85%">
+          <stop offset="0%" stopColor="var(--ink-3)"/>
+          <stop offset="100%" stopColor="var(--ink-0)"/>
+        </radialGradient>
+        <linearGradient id="hp-ring" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="var(--accent-gloss)"/>
+          <stop offset="55%" stopColor="var(--accent)"/>
+          <stop offset="100%" stopColor="var(--accent-deep)"/>
+        </linearGradient>
+      </defs>
+      <rect width="120" height="120" rx="28" fill="url(#hp-bg)"/>
+      <circle cx="60" cy="60" r="38" fill="none" stroke="url(#hp-ring)" strokeWidth="9.5" strokeLinecap="round" strokeDasharray="175 50" transform="rotate(-60 60 60)"/>
+      <circle cx="60" cy="60" r="7" fill="var(--accent-gloss)"/>
+    </svg>
   );
 }
 
@@ -427,9 +449,13 @@ Object.assign(window, { Ic, HereeWordmark, HereePin, StatusBar, Chip, Keypad });
 /* Heree App Prototype — scenes part A: Splash, Phone, Otp, Loading, Profile */
 
 function Splash({ onDone }) {
-  useEffect(()=>{ const t=setTimeout(onDone,1700); return()=>clearTimeout(t); },[]);
+  const auto = !!(window.__HEREE_TWEAKS && window.__HEREE_TWEAKS.splashAuto);
+  useEffect(()=>{
+    if(!auto) return;
+    const t=setTimeout(onDone,1700); return()=>clearTimeout(t);
+  },[auto]);
   return (
-    <div className="scene scene-enter" style={{alignItems:'center',justifyContent:'center'}}>
+    <div onClick={auto ? undefined : onDone} className="scene scene-enter" style={{alignItems:'center',justifyContent:'center',cursor: auto ? 'default' : 'pointer'}}>
       <div style={{position:'relative',width:160,height:160,marginBottom:28}}>
         <div style={{position:'absolute',inset:0,borderRadius:'50%',border:'1px solid color-mix(in oklch, var(--accent) 35%, transparent)',animation:'ping 1.6s ease-out infinite'}}/>
         <div style={{position:'absolute',inset:20,borderRadius:'50%',border:'1px solid color-mix(in oklch, var(--accent) 45%, transparent)',animation:'ping 1.6s ease-out 0.4s infinite'}}/>
@@ -441,6 +467,11 @@ function Splash({ onDone }) {
       <div style={{marginTop:14,fontSize:10.5,letterSpacing:'0.24em',textTransform:'uppercase',color:'var(--text-faint)',fontFamily:'var(--font-mono)'}}>
         twoja okolica · twoi ludzie
       </div>
+      {!auto && (
+        <div style={{marginTop:42,fontSize:11,color:'var(--text-faint)',fontFamily:'var(--font-mono)',letterSpacing:'0.14em',textTransform:'uppercase',animation:'pulse 2s ease-in-out infinite'}}>
+          dotknij, żeby zacząć
+        </div>
+      )}
     </div>
   );
 }
@@ -454,14 +485,8 @@ function Phone({ onNext, onDemo }) {
   const ok = digits.length===9 && consent;
   return (
     <div className="scene scene-enter" style={{padding:'70px 22px 28px'}}>
-      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:26}}>
-        <Chip><Ic.Lock c="var(--text-dim)"/> szyfrowane</Chip>
-        <button onClick={onDemo} style={{background:'transparent',border:'0.5px solid var(--stroke-strong)',borderRadius:100,padding:'6px 12px',fontSize:11,color:'var(--text-dim)',fontFamily:'inherit',cursor:'pointer',display:'inline-flex',alignItems:'center',gap:6}}>
-          <Ic.Sparkle c="var(--accent-2)" s={11}/> rozejrzyj się
-        </button>
-      </div>
-      <div style={{fontSize:36,fontWeight:600,letterSpacing:'-0.03em',lineHeight:1.05,marginBottom:10}}>
-        No to <span style={{color:'var(--accent)'}}>cześć</span>
+      <div style={{fontSize:36,fontWeight:600,letterSpacing:'-0.03em',lineHeight:1.05,marginBottom:10,marginTop:8}}>
+        No <span style={{color:'var(--accent)'}}>siema</span>
       </div>
       <div style={{fontSize:14,color:'var(--text-dim)',marginBottom:26,maxWidth:300,lineHeight:1.5}}>
         Rzuć numer — strzelimy kodem. Żadnych maili, żadnych haseł.
@@ -485,6 +510,19 @@ function Phone({ onNext, onDemo }) {
       </label>
       <div style={{marginTop:16,marginBottom:14}}><Keypad onPress={press} onBack={back}/></div>
       <button className="btn-primary" disabled={!ok} onClick={()=>onNext(digits)}>Wyślij kod</button>
+      <div style={{display:'flex',alignItems:'center',gap:10,margin:'14px 0 12px',color:'var(--text-faint)'}}>
+        <div style={{flex:1,height:1,background:'var(--stroke)'}}/>
+        <span style={{fontSize:10,letterSpacing:'0.18em',textTransform:'uppercase',fontFamily:'var(--font-mono)'}}>albo</span>
+        <div style={{flex:1,height:1,background:'var(--stroke)'}}/>
+      </div>
+      <button onClick={onDemo} style={{
+        width:'100%',height:48,borderRadius:24,fontFamily:'inherit',fontSize:14,fontWeight:500,
+        background:'transparent',border:'0.5px solid var(--stroke-strong)',color:'var(--text)',
+        cursor:'pointer',display:'inline-flex',alignItems:'center',justifyContent:'center',gap:8,
+        transition:'all 180ms'
+      }}>
+        <Ic.Compass s={16} c="var(--text-dim)"/> Rozejrzyj się bez konta
+      </button>
     </div>
   );
 }
@@ -766,11 +804,15 @@ function SwipeCard({ person, onSwipe, z, offset=0, active }) {
   const [drag, setDrag] = useState(0);
   const [dragY, setDragY] = useState(0);
   const [leaving, setLeaving] = useState(null);
+  const [photoIdx, setPhotoIdx] = useState(0);
   const startRef = useRef(null);
+  const tappedRef = useRef(false);
+  const photoCount = 4;
 
   const onPointerDown = (e) => {
     if(!active) return;
-    startRef.current = { x: e.clientX, y: e.clientY };
+    startRef.current = { x: e.clientX, y: e.clientY, startX: e.clientX };
+    tappedRef.current = false;
     e.currentTarget.setPointerCapture(e.pointerId);
   };
   const onPointerMove = (e) => {
@@ -778,13 +820,26 @@ function SwipeCard({ person, onSwipe, z, offset=0, active }) {
     setDrag(e.clientX - startRef.current.x);
     setDragY(e.clientY - startRef.current.y);
   };
-  const onPointerUp = () => {
+  const onPointerUp = (e) => {
     if(!startRef.current) return;
+    const moved = Math.abs(drag) + Math.abs(dragY);
+    const rect = e.currentTarget.getBoundingClientRect();
+    const tapX = e.clientX - rect.left;
     startRef.current = null;
+    if(moved < 8) {
+      // Tap — navigate photos
+      if(tapX < rect.width / 2) {
+        setPhotoIdx(i => Math.max(0, i - 1));
+      } else {
+        setPhotoIdx(i => Math.min(photoCount - 1, i + 1));
+      }
+      setDrag(0); setDragY(0);
+      return;
+    }
     if(Math.abs(drag) > 80) {
       const dir = drag > 0 ? 'right' : 'left';
       setLeaving(dir);
-      setTimeout(()=>{ onSwipe(dir); setLeaving(null); setDrag(0); setDragY(0); }, 280);
+      setTimeout(()=>{ onSwipe(dir); setLeaving(null); setDrag(0); setDragY(0); setPhotoIdx(0); }, 280);
     } else {
       setDrag(0); setDragY(0);
     }
@@ -818,13 +873,14 @@ function SwipeCard({ person, onSwipe, z, offset=0, active }) {
         userSelect:'none'
       }}
     >
-      {/* Photo placeholder with gradient */}
+      {/* Photo placeholder with gradient — varies per photoIdx */}
       <div style={{
         position:'absolute',inset:0,
         background: `
-          radial-gradient(circle at 30% 30%, hsla(${person.hue}, 70%, 60%, 0.4) 0%, transparent 60%),
-          radial-gradient(circle at 70% 80%, hsla(${person.hue + 40}, 60%, 50%, 0.3) 0%, transparent 55%)
+          radial-gradient(circle at ${30 + photoIdx*18}% ${30 + photoIdx*14}%, hsla(${person.hue + photoIdx*25}, 70%, 60%, 0.45) 0%, transparent 60%),
+          radial-gradient(circle at ${70 - photoIdx*12}% ${80 - photoIdx*10}%, hsla(${person.hue + 40 + photoIdx*20}, 60%, 50%, 0.32) 0%, transparent 55%)
         `,
+        transition:'background 280ms var(--ease-out)'
       }}/>
       {/* Initial */}
       <div style={{
@@ -832,6 +888,35 @@ function SwipeCard({ person, onSwipe, z, offset=0, active }) {
         fontSize:140,fontWeight:700,color:'rgba(255,255,255,0.12)',letterSpacing:'-0.06em',
         lineHeight:1,fontFamily:'var(--font-sans)'
       }}>{person.name[0]}</div>
+
+      {/* Photo progress bars */}
+      {active && (
+        <div style={{
+          position:'absolute',top:12,left:12,right:12,display:'flex',gap:4,zIndex:3
+        }}>
+          {Array.from({length: photoCount}).map((_,i)=>(
+            <div key={i} style={{
+              flex:1,height:3,borderRadius:2,overflow:'hidden',
+              background:'rgba(255,255,255,0.25)'
+            }}>
+              <div style={{
+                height:'100%',
+                background:'#fff',
+                width: i < photoIdx ? '100%' : i === photoIdx ? '100%' : '0%',
+                transition:'width 260ms var(--ease-out)'
+              }}/>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Tap hint zones (visual only, tap handled globally) */}
+      {active && (
+        <>
+          <div style={{position:'absolute',top:0,bottom:0,left:0,width:'35%',pointerEvents:'none',zIndex:1}}/>
+          <div style={{position:'absolute',top:0,bottom:0,right:0,width:'35%',pointerEvents:'none',zIndex:1}}/>
+        </>
+      )}
 
       {/* Like/Nope badges */}
       {active && (
@@ -1165,6 +1250,13 @@ setTimeout(fitStage, 100); setTimeout(fitStage, 400); setTimeout(fitStage, 1200)
     document.querySelectorAll('#tw-mode .pill').forEach(x => x.classList.toggle('on', x===p));
     window.__hereeSetDashboardMode && window.__hereeSetDashboardMode(p.dataset.m);
     window.parent.postMessage({type:'__edit_mode_set_keys', edits:{dashboardMode:p.dataset.m}}, '*');
+  });
+  document.getElementById('tw-splash').addEventListener('click', e => {
+    const p = e.target.closest('.pill'); if (!p) return;
+    document.querySelectorAll('#tw-splash .pill').forEach(x => x.classList.toggle('on', x===p));
+    const auto = p.dataset.a === '1';
+    window.__HEREE_TWEAKS.splashAuto = auto;
+    window.parent.postMessage({type:'__edit_mode_set_keys', edits:{splashAuto:auto}}, '*');
   });
 
   const toggleBtn = document.getElementById('tweaks-toggle');

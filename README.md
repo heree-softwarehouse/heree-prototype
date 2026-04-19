@@ -1,6 +1,11 @@
 # Heree Design System
 
-## 🔗 [**Live Prototype → heree-softwarehouse.github.io/heree-prototype/index.html**](https://heree-softwarehouse.github.io/heree-prototype/index.html)
+## 🔗 Live GitHub Pages
+
+- [**Main prototype → heree-softwarehouse.github.io/heree-prototype/**](https://heree-softwarehouse.github.io/heree-prototype/)
+- [iOS app → `/ios-app/`](https://heree-softwarehouse.github.io/heree-prototype/ios-app/)
+- [Android app → `/android-app/`](https://heree-softwarehouse.github.io/heree-prototype/android-app/)
+- [Design system → `/design-system/`](https://heree-softwarehouse.github.io/heree-prototype/design-system/)
 
 ---
 
@@ -27,6 +32,7 @@ GitHub repo mentioned but empty at time of build:
 - `preview/` — individual design-system cards (registered to the Design System tab)
 - `source/` — the original HTML/JSX prototype copied verbatim
 - `ui_kits/mobile/` — UI kit for the Heree iOS app (components + interactive `index.html`)
+- `prototype/` — GitHub Pages artifact with hamburger navigation and public subpages
 
 ---
 

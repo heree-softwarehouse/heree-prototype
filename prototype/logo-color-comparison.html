@@ -51,6 +51,27 @@ h1{font-size:46px;letter-spacing:-0.03em;font-weight:700;margin:0 0 10px;line-he
 .rec{border-radius:22px;padding:36px;display:flex;gap:32px;align-items:center;border:0.5px solid rgba(255,255,255,0.12)}
 .rec .text h2{font-size:28px;font-weight:700;letter-spacing:-0.02em;margin:0 0 8px}
 .rec .text p{font-size:14px;line-height:1.6;opacity:0.7;margin:0;max-width:54ch}
+/* Mobile — stack columns one under another */
+@media (max-width: 768px){
+  .shell{padding:28px 18px 64px}
+  h1{font-size:32px}
+  .lede{font-size:14px;margin-bottom:32px}
+  .side-by-side{grid-template-columns:1fr;margin-bottom:28px}
+  .cols{grid-template-columns:1fr;gap:18px;margin-bottom:32px}
+  .sbs-cell{padding:22px}
+  .col-head{padding:22px 22px 20px;gap:14px}
+  .col-head .info h2{font-size:22px}
+  .col-body{padding:0 18px 18px}
+  .rec{flex-direction:column;align-items:flex-start;padding:26px;gap:22px}
+  .rec svg{width:110px;height:110px}
+  .rec .text h2{font-size:24px}
+  .rec .text > div[style*="display:flex"]{flex-wrap:wrap}
+}
+@media (max-width: 420px){
+  h1{font-size:28px}
+  .sbs-cell svg{width:130px;height:130px}
+  .sbs-cell div[style*="font-size:42px"]{font-size:34px !important}
+}
 </style>
 </head>
 <body>

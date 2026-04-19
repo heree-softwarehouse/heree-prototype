@@ -10,47 +10,41 @@
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  /* ---------- COLOR — BACKGROUND (deep navy base) ---------- */
-  --bg-0: #060A14;   /* deepest — page behind device */
-  --bg-1: #0B1220;   /* app base — default scene background */
-  --bg-2: #131C2E;   /* card — raised surface */
-  --bg-3: #1C2740;   /* elevated card — modals, sheets */
-  --bg-4: #2A3654;   /* hover — interactive raised */
+  /* ---------- COLOR — BACKGROUND (warm dark base — Option A) ---------- */
+  --bg-0: #0F0B06;   /* ciepła czerń — base */
+  --bg-1: #161008;   /* app base */
+  --bg-2: #201508;   /* card */
+  --bg-3: #2B1D0C;   /* elevated card */
+  --bg-4: #3A2810;   /* hover */
 
-  /* Burgundy warm-dark tint (bottom sheet on dashboard) */
-  --bg-burgundy-1: #3A1220;
-  --bg-burgundy-2: #2A0D16;
-  --bg-burgundy-3: #1E080E;
-
-  /* ---------- COLOR — STROKES ---------- */
-  --stroke:        rgba(184, 194, 208, 0.14);
-  --stroke-strong: rgba(184, 194, 208, 0.28);
+  /* ---------- COLOR — STROKES (warm tinted) ---------- */
+  --stroke:        rgba(232, 200, 150, 0.10);
+  --stroke-strong: rgba(232, 200, 150, 0.20);
 
   /* ---------- COLOR — TEXT ---------- */
-  --text:       #F5F7FA;   /* primary (16.1:1 AAA on --bg-1) */
-  --text-dim:   #B8C2D0;   /* secondary (8.5:1 AAA) */
-  --text-faint: #7A8499;   /* tertiary (4.7:1 AA) */
+  --text:       #F2EDE6;   /* warm white */
+  --text-dim:   #B5A898;   /* secondary */
+  --text-faint: #7E6E5A;   /* tertiary */
 
-  /* ---------- COLOR — WARM ACCENTS ---------- */
-  --accent:        #FF7A45;  /* coral — brand fill (5.2:1 on bg-1; reserved for 32px+ display, italic emphasis, solid fills, pins, chips) */
-  --accent-text:   #FFC368;  /* warm amber for BODY TEXT on dark (10.8:1 AAA on bg-1) — default choice for italic accent text under 32px */
-  --accent-text-warm: #FFB37A; /* peach amber alt — slightly warmer body text (8.4:1 AAA on bg-1) */
-  --accent-soft:   #FFA478;  /* hover / soft fill */
-  --accent-deep:   #E85F2C;  /* pressed / shadow bottom */
-  --accent-gloss:  #FFC368;  /* gloss highlight (button top / amber) */
+  /* ---------- COLOR — DESERT ORANGE ACCENTS (wschód słońca canonical) ---------- */
+  --accent:        #E8901A;  /* warm amber — CTA, active, aperture ring */
+  --accent-text:   #FFD89B;  /* warm glow for body text accent */
+  --accent-soft:   #FFB84A;  /* hover / soft fill */
+  --accent-deep:   #B86010;  /* pressed / shadow bottom */
+  --accent-gloss:  #FFD89B;  /* gloss highlight / warm centre dot */
 
-  /* ---------- COLOR — SECONDARY ACCENTS ---------- */
-  --accent-2:      #FFC368;  /* amber — secondary info, demo banner */
-  --accent-3:      #5DD4B0;  /* teal — tertiary / success / calm info */
+  /* ---------- COLOR — SECONDARY ---------- */
+  --accent-2:      #FFD89B;  /* warm glow — info, highlights */
+  --accent-3:      #E8901A;  /* same family — kept for compatibility */
 
   /* ---------- COLOR — SEMANTIC ---------- */
   --color-danger:  #FF6B7A;
-  --color-success: #5DD4B0;
-  --color-warning: #FFC368;
+  --color-success: #5CBF92;
+  --color-warning: #FFD89B;
   --color-info:    #9DB6FF;
 
   /* text on fills */
-  --on-accent: #0B1220;      /* dark navy used for text on coral/amber */
+  --on-accent: #1A0A00;
 
   /* ---------- TYPOGRAPHY FAMILIES ---------- */
   --font-sans:    -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter Tight', system-ui, sans-serif;

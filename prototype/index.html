@@ -285,9 +285,66 @@ body {
   text-transform: uppercase; letter-spacing: 0.12em; font-family: var(--font-mono);
 }
 
+.page-menu {
+  position: fixed; top: 18px; left: 18px; z-index: 1000;
+}
+.page-menu.hidden { display: none; }
+.page-menu summary {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(15,17,24,0.88);
+  border: 0.5px solid var(--stroke-strong);
+  color: var(--text);
+  cursor: pointer;
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  list-style: none;
+}
+.page-menu summary::-webkit-details-marker { display: none; }
+.page-menu summary span,
+.page-menu summary span::before,
+.page-menu summary span::after {
+  display: block; width: 18px; height: 2px; border-radius: 2px;
+  background: currentColor;
+}
+.page-menu summary span { position: relative; }
+.page-menu summary span::before,
+.page-menu summary span::after {
+  content: ""; position: absolute; left: 0;
+}
+.page-menu summary span::before { top: -6px; }
+.page-menu summary span::after { top: 6px; }
+.page-menu nav {
+  margin-top: 10px; min-width: 180px; padding: 8px;
+  border-radius: 18px;
+  background: rgba(15,17,24,0.92);
+  border: 0.5px solid var(--stroke-strong);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  box-shadow: 0 16px 38px rgba(0,0,0,0.38);
+}
+.page-menu a {
+  display: block; padding: 11px 12px; border-radius: 12px;
+  color: var(--text-dim); text-decoration: none;
+  font-size: 13px; font-weight: 600;
+}
+.page-menu a:hover,
+.page-menu a.active {
+  color: var(--accent);
+  background: var(--bg-tint-a);
+}
+
 </style>
 </head>
 <body>
+<details class="page-menu" id="page-menu">
+  <summary aria-label="Otwórz menu"><span></span></summary>
+  <nav aria-label="Podstrony">
+    <a class="active" href="./ios-app/">iOS app</a>
+    <a href="./android-app/">Android app</a>
+    <a href="./design-system/">Design system</a>
+  </nav>
+</details>
 <div id="root"></div>
 
 <button class="tweaks-toggle" id="tweaks-toggle" type="button" aria-label="Pokaż panel tweaks">Tweaks</button>
@@ -337,6 +394,9 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
 }/*EDITMODE-END*/;
 document.documentElement.setAttribute('data-palette', TWEAK_DEFAULTS.palette);
 window.__HEREE_TWEAKS = { ...TWEAK_DEFAULTS };
+if (new URLSearchParams(window.location.search).has('embedded')) {
+  document.getElementById('page-menu')?.classList.add('hidden');
+}
 </script>
 
 <script type="text/babel">

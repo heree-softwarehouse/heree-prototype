@@ -1,57 +1,64 @@
-/* Heree logo components — canonical (V2, navy + coral)
+/* Heree logo components — Desert Orange navigation mark
    Use alongside React UMD globals. */
 
-// Wordmark: "heree" with a coral period — used across splash, headers.
-// Uses Newsreader italic-serif style in canonical V2.
-function HereeWordmark({ size = 44, color = 'var(--text)', style = {} }) {
+// Wordmark matching prototype/logo-color-comparison.html.
+function HereeWordmark({ size = 44, color = 'var(--text)', accent = '#E8901A', style = {} }) {
   return (
     <div
-      className="serif"
       style={{
-        fontFamily: "'Newsreader', 'New York', Georgia, serif",
+        fontFamily: "'Inter Tight', -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
         fontSize: size,
         color,
         lineHeight: 1,
-        letterSpacing: '-0.02em',
-        fontWeight: 400,
+        letterSpacing: '-0.05em',
+        fontWeight: 700,
         ...style,
       }}
     >
-      heree<span style={{ color: 'var(--accent)' }}>.</span>
+      heree<span style={{ color: accent }}>.</span>
     </div>
   );
 }
 
-// Pin: canonical logo mark — coral sphere (the 'h' sun/ember).
-// Rendered with a radial gradient in an inset bowl.
-function HereePin({ size = 108, letter = 'h' }) {
+// App icon mark from the final Desert Orange recommendation in prototype/logo-color-comparison.html.
+function HereePin({ size = 108, glow = true }) {
   return (
-    <div
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 200 200"
+      aria-hidden="true"
       style={{
-        width: size, height: size, borderRadius: '50%',
-        background: 'radial-gradient(circle at 30% 30%, #FFC368 0%, #FF7A45 55%, #C04A1F 100%)',
-        boxShadow:
-          '0 0 60px rgba(255,122,69,0.6),' +
-          'inset 0 -14px 26px rgba(0,0,0,0.4),' +
-          'inset 0 8px 14px rgba(255,235,220,0.5)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        color: '#131C2E',
-        fontSize: size * 0.44, fontWeight: 800,
-        letterSpacing: '-0.06em',
-        fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
+        display: 'block',
+        filter: glow ? 'drop-shadow(0 0 40px rgba(232,144,26,0.5))' : 'none',
       }}
-    >{letter}</div>
+    >
+      <defs>
+        <radialGradient id="hereeOrangeBg" cx="28%" cy="28%" r="85%">
+          <stop offset="0" stopColor="#2B1D08"/>
+          <stop offset="100%" stopColor="#0F0B06"/>
+        </radialGradient>
+        <linearGradient id="hereeOrangeRing" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#FFD89B"/>
+          <stop offset="55%" stopColor="#E8901A"/>
+          <stop offset="100%" stopColor="#B86010"/>
+        </linearGradient>
+      </defs>
+      <rect width="200" height="200" rx="44" fill="url(#hereeOrangeBg)"/>
+      <circle cx="100" cy="100" r="64" fill="none" stroke="url(#hereeOrangeRing)" strokeWidth="16" strokeLinecap="round" strokeDasharray="290 78" transform="rotate(-60 100 100)"/>
+      <circle cx="100" cy="100" r="10" fill="#FFD89B"/>
+    </svg>
   );
 }
 
 // Full splash lockup with radiating rings
 function HereeMark({ size = 160 }) {
   return (
-    <div style={{ position: 'relative', width: size, height: size, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ position: 'relative', width: size, height: size, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ position: 'absolute', inset: 0, borderRadius: '50%',
-        border: '1px solid rgba(255,122,69,0.34)', animation: 'ping 1.4s ease-out infinite' }}/>
+        border: '1px solid rgba(232,144,26,0.34)', animation: 'ping 1.4s ease-out infinite' }}/>
       <div style={{ position: 'absolute', inset: size*0.12, borderRadius: '50%',
-        border: '1px solid rgba(255,122,69,0.45)', animation: 'ping 1.4s ease-out 0.4s infinite' }}/>
+        border: '1px solid rgba(232,144,26,0.45)', animation: 'ping 1.4s ease-out 0.4s infinite' }}/>
       <div style={{ animation: 'pulse 2s ease-in-out infinite' }}>
         <HereePin size={size * 0.67}/>
       </div>
